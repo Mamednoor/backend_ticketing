@@ -11,9 +11,9 @@ router.post("/", async (req, res) => {
   try {
     const result = await insertTicket(req.body);
     console.log("création du ticket réussis", result);
-    res.json({ message: "Un nouveau ticket à été crée", result });
+    res.json({ message: "Un nouveau ticket a été crée", result });
   } catch (error) {
-    console.log("erreur lors de la création d'un ticket", error);
+    console.log("erreur lors de la création du ticket", error);
     res.json({ status: "error", message: error.message });
   }
 });

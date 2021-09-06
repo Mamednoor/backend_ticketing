@@ -10,7 +10,7 @@ const routes = require("./routes/route");
 
 const PORT = process.env.PORT || 8080;
 // sécurité pour l'API
-app.use(helmet());
+// app.use(helmet());
 // gestion des erreur cors
 app.use(cors());
 
@@ -49,7 +49,7 @@ app.use("/tickets", routes.tickets);
 const handleError = require("./utils/errorHandler");
 
 app.use((req, res, next) => {
-  const error = new Error("la page demandée n'hexiste pas");
+  const error = new Error("la page demandée n'existe pas");
   error.status = 404;
   next(error);
 });
