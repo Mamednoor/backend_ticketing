@@ -8,10 +8,14 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/", async (req, res) => {
-  const result = await insertTicket(req.body);
-  console.log(result);
-
-  res.json({ message: "Un nouveau ticket à été crée", result });
+  try {
+    const result = await insertTicket(req.body);
+    console.log("création du ticket réussis", result);
+    res.json({ message: "Un nouveau ticket à été crée", result });
+  } catch (error) {
+    console.log("erreur lors de la création d'un ticket", error);
+    res.json({ status: "error", message: error.message });
+  }
 });
 
 module.exports = router;
