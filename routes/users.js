@@ -3,7 +3,10 @@ const router = express.Router();
 
 const { insertUser, getUserByEmail } = require("../model/User.model");
 const { hashPassword, comparePassword } = require("../services/bcrypt");
-const { createAccessJWT, createRefreshJWT } = require("../services/checkToken");
+const {
+  createAccessToken,
+  createRefreshToken,
+} = require("../services/checkToken");
 const { json } = require("body-parser");
 
 router.get("/", (req, res, next) => {
@@ -72,14 +75,14 @@ router.post("/login", async (req, res) => {
     });
   }
 
-  const accessJWT = await createAccessJWT(user.email);
-  const refreshJWT = await createRefreshJWT(user.email);
+  const accessToken = await createAccessToken(user.email);
+  const refreshToken = await createRefreshToken(user.email);
 
   res.json({
     status: "success",
     message: "Connexion réussie",
-    accessJWT,
-    refreshJWT,
+    accessToken,
+    refreshToken,
   });
 });
 

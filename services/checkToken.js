@@ -1,22 +1,22 @@
 const jwt = require("jsonwebtoken");
 
-const createAccessJWT = (payload) => {
-  const accessJWT = jwt.sign({ payload }, process.env.JWT_ACCESS_SECRET, {
+const createAccessToken = (payload) => {
+  const accessToken = jwt.sign({ payload }, process.env.JWT_ACCESS_SECRET, {
     expiresIn: "15m",
   });
 
-  return Promise.resolve(accessJWT);
+  return Promise.resolve(accessToken);
 };
 
-const createRefreshJWT = (payload) => {
-  const refreshJWT = jwt.sign({ payload }, process.env.JWT_ACCESS_SECRET, {
+const createRefreshToken = (payload) => {
+  const refreshToken = jwt.sign({ payload }, process.env.JWT_ACCESS_SECRET, {
     expiresIn: "30d",
   });
 
-  return Promise.resolve(refreshJWT);
+  return Promise.resolve(refreshToken);
 };
 
 module.exports = {
-  createAccessJWT,
-  createRefreshJWT,
+  createAccessToken,
+  createRefreshToken,
 };
