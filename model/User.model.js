@@ -26,4 +26,31 @@ const getUserByEmail = (email) => {
   });
 };
 
-module.exports = { insertUser, getUserByEmail };
+const storeUserRefreshToken = (_id, token) => {
+  return new Promise((resolve, reject) => {
+    try {
+      UserSchema.findOneAndUpdate(
+        // filtre sur l'id
+        { _id },
+        // la donnée à mettre à jour
+        {
+          $set: {
+            "refreshToken.token": token,
+            "refreshToken.addedOn": Date.now(),
+          },
+        },
+        // retour du dernier update de donnée
+        { new: true }
+      )
+        .then((data) => resolve(data))
+        .catch((error) => {
+          console.log("1er catch", error);
+          reject(error);
+        });
+    } catch (error) {
+      console.log("2eme catch", error);
+      reject(error);
+    }
+  });
+};
+module.exports = { insertUser, getUserByEmail, storeUserRefreshToken };

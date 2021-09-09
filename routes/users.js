@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
 
 // connexion d'un utilisateur
 router.post("/login", async (req, res) => {
-  console.log("Corp de la requête login : ", req.body);
+  console.log(" info login : ", req.body);
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -56,8 +56,6 @@ router.post("/login", async (req, res) => {
 
   const user = await getUserByEmail(email);
 
-  console.log(" user connected : ", user);
-
   const pwdCompare = user && user._id ? user.password : null;
 
   if (!pwdCompare)
@@ -67,7 +65,6 @@ router.post("/login", async (req, res) => {
     });
 
   const result = await comparePassword(password, pwdCompare);
-  console.log("result : ", result);
   if (!result) {
     return res.json({
       status: "error",
@@ -75,8 +72,8 @@ router.post("/login", async (req, res) => {
     });
   }
 
-  const accessToken = await createAccessToken(user.email);
-  const refreshToken = await createRefreshToken(user.email);
+  const accessToken = await createAccessToken(user.email, `${user._id}`);
+  const refreshToken = await createRefreshToken(user.email, `${user._id}`);
 
   res.json({
     status: "success",
