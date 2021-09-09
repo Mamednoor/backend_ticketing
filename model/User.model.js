@@ -34,10 +34,8 @@ const storeUserRefreshToken = (_id, token) => {
         { _id },
         // la donnée à mettre à jour
         {
-          $set: {
-            "refreshToken.token": token,
-            "refreshToken.addedOn": Date.now(),
-          },
+          "refreshToken.token": token,
+          "refreshToken.addedOn": Date.now(),
         },
         // retour du dernier update de donnée
         { new: true }
