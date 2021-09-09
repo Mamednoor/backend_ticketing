@@ -1,9 +1,10 @@
-const { json } = require("body-parser");
 const express = require("express");
 const router = express.Router();
 
 const { insertUser, getUserByEmail } = require("../model/User.model");
 const { hashPassword, comparePassword } = require("../services/bcrypt");
+const { createAccessJWT, createRefreshJWT } = require("../services/checkToken");
+const { json } = require("body-parser");
 
 router.get("/", (req, res, next) => {
   // res.json({ message: " get users route" });
@@ -51,7 +52,9 @@ router.post("/login", async (req, res) => {
   }
 
   const user = await getUserByEmail(email);
+
   console.log(" user connected : ", user);
+
   const pwdCompare = user && user._id ? user.password : null;
 
   if (!pwdCompare)
@@ -61,9 +64,23 @@ router.post("/login", async (req, res) => {
     });
 
   const result = await comparePassword(password, pwdCompare);
-  console.log("résultat de la comparaison pwd : ", result);
+  console.log("result : ", result);
+  if (!result) {
+    return res.json({
+      status: "error",
+      message: "vos identifiants sont incorrectes",
+    });
+  }
 
-  res.json({ status: "success", message: "Connexion réussie" });
+  const accessJWT = await createAccessJWT(user.email);
+  const refreshJWT = await createRefreshJWT(user.email);
+
+  res.json({
+    status: "success",
+    message: "Connexion réussie",
+    accessJWT,
+    refreshJWT,
+  });
 });
 
 module.exports = router;
