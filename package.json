@@ -1,5 +1,5 @@
 {
-  "name": "crm_backend",
+  "name": "backend_ticketing",
   "version": "1.0.0",
   "description": "backend and restfull api for ticketing web application",
   "main": "index.js",

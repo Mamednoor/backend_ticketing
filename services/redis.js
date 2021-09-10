@@ -31,4 +31,12 @@ const getToken = (key) => {
   });
 };
 
-module.exports = { setToken, getToken };
+const deleteToken = (key) => {
+  try {
+    client.del(key);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { setToken, getToken, deleteToken };

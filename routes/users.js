@@ -10,9 +10,9 @@ const { hashPassword, comparePassword } = require("../services/bcrypt");
 const {
   createAccessToken,
   createRefreshToken,
-} = require("../services/checkToken");
+} = require("../services/setToken");
 
-const { checkToken } = require("../services/authorization");
+const { checkToken } = require("../services/checkToken");
 
 router.all("/", (req, res, next) => {
   next();
@@ -45,11 +45,13 @@ router.post("/", async (req, res) => {
 
     const result = await insertUser(newUser);
 
-    console.log("création de l'utilisateur réussis", result);
-    res.json({ message: "Un nouvelle utilisateur a été crée", result });
+    // console.log("création de l'utilisateur réussis", result);
+    res
+      .status(201)
+      .json({ message: "Un nouvelle utilisateur a été crée", result });
   } catch (error) {
-    console.log("erreur lors de la création de l'utilisateur", error);
-    res.json({ status: "error", message: error.message });
+    // console.log("erreur lors de la création de l'utilisateur", error);
+    res.status(400).json({ message: error.message });
   }
 });
 
@@ -59,7 +61,7 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.json({
+    return res.status(401).json({
       status: "error",
       message: "Les informations saisies sont incorrectes",
     });
@@ -70,14 +72,14 @@ router.post("/login", async (req, res) => {
   const pwdCompare = user && user._id ? user.password : null;
 
   if (!pwdCompare)
-    return res.json({
+    return res.status(401).json({
       status: "error",
       message: "vos identifiants sont incorrectes",
     });
 
   const result = await comparePassword(password, pwdCompare);
   if (!result) {
-    return res.json({
+    return res.status(401).json({
       status: "error",
       message: "vos identifiants sont incorrectes",
     });
@@ -86,7 +88,7 @@ router.post("/login", async (req, res) => {
   const accessToken = await createAccessToken(user.email, `${user._id}`);
   const refreshToken = await createRefreshToken(user.email, `${user._id}`);
 
-  res.json({
+  res.status(200).json({
     status: "success",
     message: "Connexion réussie",
     accessToken,
