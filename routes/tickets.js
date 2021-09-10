@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { insertTicket } = require("../model/Ticket.model");
 
-router.get("/", (req, res, next) => {
+router.all("/", (req, res, next) => {
   // res.json({ message: " get tickets route" });
   next();
 });

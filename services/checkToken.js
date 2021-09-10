@@ -9,7 +9,7 @@ const createAccessToken = async (email, _id) => {
       { email },
       process.env.JWT_ACCESS_SECRET,
       {
-        expiresIn: "15m",
+        expiresIn: "2h",
       }
     );
     await setToken(accessToken, `${_id}`);
@@ -35,7 +35,18 @@ const createRefreshToken = async (email, _id) => {
   }
 };
 
+const verifyAccessToken = (userToken) => {
+  try {
+    return Promise.resolve(
+      jwt.verify(userToken, process.env.JWT_ACCESS_SECRET)
+    );
+  } catch (error) {
+    return Promise.resolve(error);
+  }
+};
+
 module.exports = {
   createAccessToken,
   createRefreshToken,
+  verifyAccessToken,
 };

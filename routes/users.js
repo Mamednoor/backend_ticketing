@@ -1,17 +1,28 @@
 const express = require("express");
 const router = express.Router();
 
-const { insertUser, getUserByEmail } = require("../model/User.model");
+const {
+  insertUser,
+  getUserById,
+  getUserByEmail,
+} = require("../model/User.model");
 const { hashPassword, comparePassword } = require("../services/bcrypt");
 const {
   createAccessToken,
   createRefreshToken,
 } = require("../services/checkToken");
-const { json } = require("body-parser");
 
-router.get("/", (req, res, next) => {
-  // res.json({ message: " get users route" });
+const { checkToken } = require("../services/authorization");
+
+router.all("/", (req, res, next) => {
   next();
+});
+
+// profil utilisateur
+router.get("/user", checkToken, async (req, res) => {
+  const _id = req.userId;
+  const userProfil = await getUserById(_id);
+  res.json({ user: userProfil });
 });
 
 // création d'un utilisateur
