@@ -45,6 +45,7 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use("/", routes.api);
 app.use("/users", routes.users);
 app.use("/tickets", routes.tickets);
+app.use("/tokens", routes.tokens);
 
 const handleError = require("./utils/errorHandler");
 
