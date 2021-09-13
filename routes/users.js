@@ -5,7 +5,8 @@ const {
 	insertUser,
 	getUserById,
 	getUserByEmail,
-} = require('../model/User.model')
+} = require('../model/users/User.model')
+
 const { hashPassword, comparePassword } = require('../services/bcrypt')
 const {
 	createAccessToken,
@@ -13,6 +14,7 @@ const {
 } = require('../services/setToken')
 
 const { checkToken } = require('../services/checkToken')
+const { setResetCode } = require('../model/reset-password/reset-password.model')
 
 router.all('/', (req, res, next) => {
 	next()
@@ -52,7 +54,7 @@ router.post('/', async (req, res) => {
 })
 
 // profil utilisateur
-router.get('/user', checkToken, async (req, res) => {
+router.get('/profil', checkToken, async (req, res) => {
 	const _id = req.userId
 	const userProfil = await getUserById(_id)
 	res.json({
@@ -99,6 +101,19 @@ router.post('/login', async (req, res) => {
 		accessToken,
 		refreshToken,
 	})
+})
+
+router.post('/reset-password', async (req, res) => {
+	const { email } = req.body
+
+	const user = await getUserByEmail(email)
+
+	if (user && user._id) {
+		const setCode = await setResetCode(email)
+		return res.json(setCode)
+	}
+
+	res.json({ message: 'Un mail de ré-initialisation vous sera envoyé' })
 })
 
 module.exports = router
