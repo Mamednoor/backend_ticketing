@@ -1,19 +1,13 @@
 const { ResetPasswordSchema } = require('./reset-password.schema')
+const { codeGenerator } = require('../../utils/codeGenerator')
 
-const setResetCode = (email) => {
-	//création d'un nouveau mot de passe pour la ré-initialisation
-	function randCode() {
-		let text = ''
-		let possible =
-			'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-		for (let i = 0; i < 15; i++)
-			text += possible.charAt(Math.floor(Math.random() * possible.length))
-		return text
-	}
+const setResetCode = async (email) => {
+	const hashLenght = 15
+	const randCode = await codeGenerator(hashLenght)
 
 	const resetObjt = {
 		email,
-		resetCode: randCode(),
+		resetCode: randCode,
 	}
 	return new Promise((resolve, reject) => {
 		ResetPasswordSchema(resetObjt)
