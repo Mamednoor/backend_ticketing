@@ -15,6 +15,7 @@ const {
 
 const { checkToken } = require('../services/checkToken')
 const { setResetCode } = require('../model/reset-password/reset-password.model')
+const { mailProcessor } = require('../services/emailSender')
 
 router.all('/', (req, res, next) => {
 	next()
@@ -107,19 +108,24 @@ router.post('/reset-password', checkToken, async (req, res) => {
 	const _id = req.userId
 	const user = await getUserById(_id)
 
-	console.log(user)
-
 	if (user && user._id) {
 		const setCode = await setResetCode(user.email)
+		const result = await mailProcessor(user.email, setCode.resetCode)
+
+		if (result && result.messageId) {
+			return res.status(200).json({
+				message: 'Un mail de ré-initialisation vous sera envoyé',
+			})
+		}
+
 		return res.status(200).json({
 			message: 'Un mail de ré-initialisation vous sera envoyé',
-			setCode,
 		})
 	}
 
-	if (!result) {
-		return res.status(400).json({ message: 'Une erreur est survenue' })
-	}
+	return res.status(403).json({
+		message: "Une erreur est survenue merci de renouveller l'opération",
+	})
 })
 
 module.exports = router
