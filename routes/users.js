@@ -103,17 +103,23 @@ router.post('/login', async (req, res) => {
 	})
 })
 
-router.post('/reset-password', async (req, res) => {
-	const { email } = req.body
+router.post('/reset-password', checkToken, async (req, res) => {
+	const _id = req.userId
+	const user = await getUserById(_id)
 
-	const user = await getUserByEmail(email)
+	console.log(user)
 
 	if (user && user._id) {
-		const setCode = await setResetCode(email)
-		return res.json(setCode)
+		const setCode = await setResetCode(user.email)
+		return res.status(200).json({
+			message: 'Un mail de ré-initialisation vous sera envoyé',
+			setCode,
+		})
 	}
 
-	res.json({ message: 'Un mail de ré-initialisation vous sera envoyé' })
+	if (!result) {
+		return res.status(400).json({ message: 'Une erreur est survenue' })
+	}
 })
 
 module.exports = router
