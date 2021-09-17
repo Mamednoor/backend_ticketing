@@ -5,6 +5,7 @@ const {
 	insertUser,
 	getUserById,
 	getUserByEmail,
+	updatePassword,
 } = require('../model/users/User.model')
 
 const { hashPassword, comparePassword } = require('../services/bcrypt')
@@ -14,7 +15,11 @@ const {
 } = require('../services/setToken')
 
 const { checkToken } = require('../services/checkToken')
-const { setResetCode } = require('../model/reset-password/reset-password.model')
+const {
+	setResetCode,
+	ResetPwdByMail,
+	deleteOldCode,
+} = require('../model/reset-password/reset-password.model')
 const { mailProcessor } = require('../services/emailSender')
 
 router.all('/', (req, res, next) => {
@@ -104,19 +109,20 @@ router.post('/login', async (req, res) => {
 	})
 })
 
+// réinitialisation du mot de passe
 router.post('/reset-password', checkToken, async (req, res) => {
 	const _id = req.userId
 	const user = await getUserById(_id)
 
 	if (user && user._id) {
 		const setCode = await setResetCode(user.email)
-		const result = await mailProcessor(user.email, setCode.resetCode)
+		await mailProcessor({
+			email: user.email,
+			code: setCode.resetCode,
+			type: 'Reset-Password',
+		})
 
-		if (result && result.messageId) {
-			return res.status(200).json({
-				message: 'Un mail de ré-initialisation vous sera envoyé',
-			})
-		}
+		console.log(setCode)
 
 		return res.status(200).json({
 			message: 'Un mail de ré-initialisation vous sera envoyé',
@@ -125,6 +131,42 @@ router.post('/reset-password', checkToken, async (req, res) => {
 
 	return res.status(403).json({
 		message: "Une erreur est survenue merci de renouveller l'opération",
+	})
+})
+
+// mise à jour du mot de passe après réinitialisation
+router.patch('/reset-password', async (req, res) => {
+	const { email, resetCode, newPassword } = req.body
+
+	const getResetCode = await ResetPwdByMail(email, resetCode)
+
+	if (getResetCode._id) {
+		const createdDate = getResetCode.addedOn
+		const expiresIn = 1
+		let expirationDate = createdDate.setDate(createdDate.getDate() + expiresIn)
+
+		const today = new Date()
+
+		if (today > expirationDate) {
+			return res
+				.status(403)
+				.json({ message: 'Le code utilisé est expiré ou invalide' })
+		}
+
+		const hashedNewPwd = await hashPassword(newPassword)
+		const user = await updatePassword(email, hashedNewPwd)
+
+		if (user._id) {
+			await mailProcessor({ email: user.email, type: 'Password-update' })
+
+			deleteOldCode(email, resetCode)
+
+			res.status(200).json({ message: 'Votre mot de passe a été mis à jour' })
+		}
+	}
+
+	res.status(400).json({
+		message: "L'opération a échoué, veuillez réessayer ultérieurement",
 	})
 })
 

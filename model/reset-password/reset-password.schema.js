@@ -12,6 +12,11 @@ const ResetPasswordSchema = new Schema({
 		minlength: 15,
 		maxlength: 15,
 	},
+	addedOn: {
+		type: Date,
+		required: true,
+		default: Date.now(),
+	},
 })
 
 module.exports = {
