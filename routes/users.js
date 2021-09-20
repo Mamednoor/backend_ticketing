@@ -21,6 +21,10 @@ const {
 	deleteOldCode,
 } = require('../model/reset-password/reset-password.model')
 const { mailProcessor } = require('../services/emailSender')
+const {
+	resetMailCheck,
+	updateMailCheck,
+} = require('../services/formValidation')
 
 router.all('/', (req, res, next) => {
 	next()
@@ -110,11 +114,11 @@ router.post('/login', async (req, res) => {
 })
 
 // réinitialisation du mot de passe
-router.post('/reset-password', checkToken, async (req, res) => {
+router.post('/reset-password', checkToken, resetMailCheck, async (req, res) => {
 	const _id = req.userId
 	const user = await getUserById(_id)
 
-	if (user && user._id) {
+	if (user._id && user.email) {
 		const setCode = await setResetCode(user.email)
 		await mailProcessor({
 			email: user.email,
@@ -135,7 +139,7 @@ router.post('/reset-password', checkToken, async (req, res) => {
 })
 
 // mise à jour du mot de passe après réinitialisation
-router.patch('/reset-password', async (req, res) => {
+router.patch('/reset-password', updateMailCheck, async (req, res) => {
 	const { email, resetCode, newPassword } = req.body
 
 	const getResetCode = await ResetPwdByMail(email, resetCode)
@@ -143,8 +147,8 @@ router.patch('/reset-password', async (req, res) => {
 	if (getResetCode._id) {
 		const createdDate = getResetCode.addedOn
 		const expiresIn = 1
-		let expirationDate = createdDate.setDate(createdDate.getDate() + expiresIn)
 
+		let expirationDate = createdDate.setDate(createdDate.getDate() + expiresIn)
 		const today = new Date()
 
 		if (today > expirationDate) {
@@ -161,11 +165,13 @@ router.patch('/reset-password', async (req, res) => {
 
 			deleteOldCode(email, resetCode)
 
-			res.status(200).json({ message: 'Votre mot de passe a été mis à jour' })
+			return res
+				.status(200)
+				.json({ message: 'Votre mot de passe a été mis à jour' })
 		}
 	}
 
-	res.status(400).json({
+	return res.status(400).json({
 		message: "L'opération a échoué, veuillez réessayer ultérieurement",
 	})
 })
