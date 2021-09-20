@@ -21,7 +21,11 @@ const {
 	deleteOldCode,
 } = require('../model/reset-password/reset-password.model')
 const { mailProcessor } = require('../services/emailSender')
-const { resetMailCheck, updateMailCheck } = require('../utils/formValidation')
+const {
+	loginCheck,
+	resetMailCheck,
+	updatePwdMailCheck,
+} = require('../utils/formValidation')
 
 router.all('/', (req, res, next) => {
 	next()
@@ -70,7 +74,7 @@ router.get('/profil', checkToken, async (req, res) => {
 })
 
 // connexion d'un utilisateur
-router.post('/login', async (req, res) => {
+router.post('/login', loginCheck, async (req, res) => {
 	console.log(' info login : ', req.body)
 	const { email, password } = req.body
 
@@ -136,7 +140,7 @@ router.post('/reset-password', checkToken, resetMailCheck, async (req, res) => {
 })
 
 // mise à jour du mot de passe après réinitialisation
-router.patch('/reset-password', updateMailCheck, async (req, res) => {
+router.patch('/reset-password', updatePwdMailCheck, async (req, res) => {
 	const { email, resetCode, newPassword } = req.body
 
 	const getResetCode = await ResetPwdByMail(email, resetCode)
