@@ -21,10 +21,7 @@ const {
 	deleteOldCode,
 } = require('../model/reset-password/reset-password.model')
 const { mailProcessor } = require('../services/emailSender')
-const {
-	resetMailCheck,
-	updateMailCheck,
-} = require('../services/formValidation')
+const { resetMailCheck, updateMailCheck } = require('../utils/formValidation')
 
 router.all('/', (req, res, next) => {
 	next()
