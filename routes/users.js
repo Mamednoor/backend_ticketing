@@ -22,6 +22,7 @@ const {
 } = require('../model/reset-password/reset-password.model')
 const { mailProcessor } = require('../services/emailSender')
 const {
+	createUserChecker,
 	loginCheck,
 	resetMailCheck,
 	updatePwdMailCheck,
@@ -32,7 +33,7 @@ router.all('/', (req, res, next) => {
 })
 
 // création d'un utilisateur
-router.post('/', async (req, res) => {
+router.post('/', createUserChecker, async (req, res) => {
 	const { firstname, lastname, company, address, phone, email, password } =
 		req.body
 	try {
@@ -49,15 +50,16 @@ router.post('/', async (req, res) => {
 			password: hashedPwd,
 		}
 
+		console.log('req body : ', req.body)
 		const result = await insertUser(newUser)
 
-		// console.log("création de l'utilisateur réussis", result);
+		console.log("création de l'utilisateur réussis", result)
 		res.status(201).json({
 			message: 'Un nouvelle utilisateur a été crée',
 			result,
 		})
 	} catch (error) {
-		// console.log("erreur lors de la création de l'utilisateur", error);
+		console.log("erreur lors de la création de l'utilisateur", error)
 		res.status(400).json({
 			message: error.message,
 		})
