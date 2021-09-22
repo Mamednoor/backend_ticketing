@@ -11,7 +11,8 @@ const lastname = Joi.string().alphanum().min(2).max(30).required()
 const company = Joi.string().alphanum().min(3).max(50).required()
 const address = Joi.string().max(150).required()
 
-// faire la validation aussi coté front pour ne pas avoir de problème pour le numéro de téléphone
+// validation du numéro de téléphone, téléphone colonne String,
+// min et max length à 10 regex pour le numéro de téléphone en francais
 const phone = Joi.string()
 	.min(10)
 	.max(10)
