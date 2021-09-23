@@ -14,7 +14,9 @@ const checkToken = async (req, resp, next) => {
 		if (!userId) {
 			return resp
 				.status(403)
-				.json({ message: 'Une erreur est survenue, la connexion échouée' })
+				.json({
+					message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
+				})
 		}
 		req.userId = userId
 

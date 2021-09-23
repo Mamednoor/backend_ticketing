@@ -6,6 +6,7 @@ const {
 	getUserById,
 	getUserByEmail,
 	updatePassword,
+	storeUserRefreshToken,
 } = require('../model/users/User.model')
 
 const { hashPassword, comparePassword } = require('../services/bcrypt')
@@ -27,6 +28,7 @@ const {
 	resetMailCheck,
 	updatePwdMailCheck,
 } = require('../utils/formValidation')
+const { deleteToken } = require('../services/redis')
 
 router.all('/', (req, res, next) => {
 	next()
@@ -114,6 +116,19 @@ router.post('/login', loginCheck, async (req, res) => {
 		accessToken,
 		refreshToken,
 	})
+})
+
+// déconnexion de l'utilisateur
+router.delete('/logout', checkToken, async (req, res) => {
+	const token = req.headers.authorization
+
+	const _id = req.userId
+	// const userProfil = await getUserById(_id)
+
+	deleteToken(token)
+	const result = await storeUserRefreshToken(_id, '')
+
+	res.status(200).json({ messeage: 'Déconnexion réussie' })
 })
 
 // réinitialisation du mot de passe
