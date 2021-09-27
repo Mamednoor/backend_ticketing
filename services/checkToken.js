@@ -1,7 +1,7 @@
 const { verifyAccessToken } = require('./setToken')
 const { getToken, deleteToken } = require('./redis')
 
-const checkToken = async (req, resp, next) => {
+const checkToken = async (req, res, next) => {
 	// on vérifie la présence du token dans les headers
 	const token = req.headers.authorization
 
@@ -12,12 +12,11 @@ const checkToken = async (req, resp, next) => {
 		const userId = await getToken(token)
 
 		if (!userId) {
-			return resp
-				.status(403)
-				.json({
-					message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
-				})
+			return res.status(403).json({
+				message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
+			})
 		}
+
 		req.userId = userId
 
 		return next()
@@ -25,7 +24,7 @@ const checkToken = async (req, resp, next) => {
 	//pour la suppression de l'ancien token en BDD
 	deleteToken(token)
 
-	return resp.status(401).json({ message: 'Authorisation refusée' })
+	return res.status(401).json({ message: 'Authorisation refusée' })
 }
 
 module.exports = {
