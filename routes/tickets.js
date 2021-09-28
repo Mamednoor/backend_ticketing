@@ -1,7 +1,9 @@
 const express = require('express')
 const router = express.Router()
+
 const {
 	insertTicket,
+	insertPictureTicket,
 	getTickets,
 	getOneTicket,
 	updateMessageTicket,
@@ -10,6 +12,7 @@ const {
 	deleteTicket,
 } = require('../model/tickets/Ticket.model')
 const { checkToken } = require('../services/checkToken')
+const { upload } = require('../utils/upload')
 
 router.all('/', (req, res, next) => {
 	// res.json({ message: " get tickets route" });
@@ -50,16 +53,28 @@ router.get('/:_id', checkToken, async (req, res) => {
 	}
 })
 
-// création d'un ticket
-router.post('/', checkToken, async (req, res) => {
-	try {
-		const { subject, sender, message } = req.body
+// router.put('/:_id', checkToken, upload.single('picture'), async (req, res) => {
+// 	try {
+// 		const { _id } = req.params
+// 		const userId = req.userId
+// 		const pictureData = {
+// 			picture: req.file.filename,
+// 		}
+// 		const result = await insertPictureTicket({ picture })
+// 	} catch (error) {}
+// })
 
+// création d'un ticket
+router.post('/', checkToken, upload.single('picture'), async (req, res) => {
+	try {
 		const userId = req.userId
+		const { subject, sender, message } = req.body
+		const picture = req.file.filename
 
 		const ticketObjt = {
 			clientId: userId,
 			subject,
+			picture,
 			conversations: [
 				{
 					sender,

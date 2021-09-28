@@ -22,6 +22,9 @@ const TicketSchema = new Schema({
 		required: true,
 		default: 'En Attente',
 	},
+	picture: {
+		type: String,
+	},
 	conversations: [
 		{
 			sender: {

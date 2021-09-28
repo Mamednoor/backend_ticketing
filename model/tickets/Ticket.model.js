@@ -14,6 +14,20 @@ const insertTicket = (ticketObjt) => {
 	})
 }
 
+// enregistrement d'un ticket en BDD
+const insertPictureTicket = (pictureData) => {
+	return new Promise((resolve, reject) => {
+		try {
+			TicketSchema(pictureData)
+				.save()
+				.then((data) => resolve(data))
+				.catch((error) => reject(error))
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
 // récupération des tickets d'un utilisateur en fonction de son ID
 const getTickets = (userId) => {
 	return new Promise((resolve, reject) => {
@@ -115,6 +129,7 @@ const deleteTicket = ({ _id, userId }) => {
 
 module.exports = {
 	insertTicket,
+	insertPictureTicket,
 	getTickets,
 	getOneTicket,
 	updateMessageTicket,
