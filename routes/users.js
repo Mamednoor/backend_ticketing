@@ -79,7 +79,6 @@ router.get('/profil', checkToken, async (req, res) => {
 
 // connexion d'un utilisateur
 router.post('/login', loginCheck, async (req, res) => {
-	console.log(' info login : ', req.body)
 	const { email, password } = req.body
 
 	if (!email || !password) {

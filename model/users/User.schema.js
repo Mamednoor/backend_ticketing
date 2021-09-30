@@ -6,22 +6,26 @@ const UserSchema = new Schema({
 		type: String,
 		minlength: 5,
 		maxlength: 30,
+		trim: true,
 		required: true,
 	},
 	lastname: {
 		type: String,
 		minlength: 2,
 		maxlength: 30,
+		trim: true,
 		required: true,
 	},
 	company: {
 		type: String,
 		minlength: 3,
 		maxlength: 50,
+		trim: true,
 		required: true,
 	},
 	address: {
 		type: String,
+		trim: true,
 		maxlength: 150,
 	},
 	phone: {
@@ -34,6 +38,7 @@ const UserSchema = new Schema({
 		type: String,
 		maxlength: 100,
 		required: true,
+		trim: true,
 		unique: true,
 	},
 	password: {

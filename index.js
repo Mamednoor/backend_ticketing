@@ -10,7 +10,7 @@ const routes = require('./routes/route')
 
 const PORT = process.env.PORT || 8080
 // sécurité pour l'API
-// app.use(helmet());
+app.use(helmet())
 // gestion des erreur cors
 app.use(cors())
 
