@@ -54,14 +54,13 @@ const getOneTicket = (_id, userId) => {
 	})
 }
 
-// récupération des tickets d'un utilisateur en fonction de son ID
+// mise à jour d'un ticket en fonction de son ID
 const updateMessageTicket = ({ _id, userId, sender, message }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndUpdate(
 				{ _id, userId },
 				{
-					status: 'En Attente',
 					$push: {
 						conversations: { sender, message },
 					},

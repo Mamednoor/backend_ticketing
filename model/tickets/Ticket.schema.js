@@ -7,6 +7,7 @@ const TicketSchema = new Schema({
 	},
 	subject: {
 		type: String,
+		minlength: 10,
 		maxlength: 100,
 		required: true,
 		default: '',
@@ -29,13 +30,15 @@ const TicketSchema = new Schema({
 		{
 			sender: {
 				type: String,
-				maxlength: 50,
+				minlength: 5,
+				maxlength: 30,
 				required: true,
 				default: '',
 			},
 			message: {
 				type: String,
-				maxlength: 1000,
+				minlength: 10,
+				maxlength: 500,
 				required: true,
 				default: '',
 			},

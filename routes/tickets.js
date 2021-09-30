@@ -12,6 +12,11 @@ const {
 	deleteTicket,
 } = require('../model/tickets/Ticket.model')
 const { checkToken } = require('../services/checkToken')
+const {
+	createTicketCheck,
+	statutCheck,
+	replyTicketCheck,
+} = require('../utils/formValidation')
 const { upload } = require('../utils/upload')
 
 router.all('/', (req, res, next) => {
@@ -53,65 +58,66 @@ router.get('/:_id', checkToken, async (req, res) => {
 	}
 })
 
-// router.put('/:_id', checkToken, upload.single('picture'), async (req, res) => {
-// 	try {
-// 		const { _id } = req.params
-// 		const userId = req.userId
-// 		const pictureData = {
-// 			picture: req.file.filename,
-// 		}
-// 		const result = await insertPictureTicket({ picture })
-// 	} catch (error) {}
-// })
-
 // création d'un ticket
-router.post('/', checkToken, upload.single('picture'), async (req, res) => {
-	try {
-		const userId = req.userId
-		const { subject, sender, message } = req.body
-		const picture = req.file.filename
+router.post(
+	'/',
+	checkToken,
+	createTicketCheck,
+	upload.single('picture'),
+	async (req, res) => {
+		try {
+			const userId = req.userId
+			const { subject, sender, message } = req.body
+			const picture = req.file.filename
 
-		const ticketObjt = {
-			clientId: userId,
-			subject,
-			picture,
-			conversations: [
-				{
-					sender,
-					message,
-				},
-			],
-		}
+			const ticketObjt = {
+				clientId: userId,
+				subject,
+				picture,
+				conversations: [
+					{
+						sender,
+						message,
+					},
+				],
+			}
 
-		const result = await insertTicket(ticketObjt)
+			const result = await insertTicket(ticketObjt)
 
-		if (result._id) {
-			return res.status(200).json({
-				status: 'success',
-				message: 'Un nouveau ticket a été crée',
-				result,
+			if (result._id) {
+				return res.status(200).json({
+					status: 'success',
+					message: 'Un nouveau ticket a été crée',
+					result,
+				})
+			}
+
+			res.status(400).json({
+				status: 'error',
+				message: 'erreur lors de la création du ticket',
 			})
+			res.json({ status: 'error', message: error.message })
+		} catch (error) {
+			res.status(400).json({ status: 'error', message: error.message })
 		}
-
-		res.status(400).json({
-			status: 'error',
-			message: 'erreur lors de la création du ticket',
-		})
-		res.json({ status: 'error', message: error.message })
-	} catch (error) {
-		res.status(400).json({ status: 'error', message: error.message })
-	}
-})
+	},
+)
 
 // mise à jour du ticket
-router.put('/:_id', checkToken, async (req, res) => {
+router.put('/:_id', checkToken, replyTicketCheck, async (req, res) => {
 	// console.log(req.params)
 	try {
 		const { sender, message } = req.body
 		// query selector de l'id du ticket
 		const { _id } = req.params
 		const userId = req.userId
-		const result = await updateMessageTicket({ _id, userId, sender, message })
+
+		const result = await updateMessageTicket({
+			_id,
+			userId,
+			sender,
+			message,
+		})
 
 		if (result._id) {
 			return res.status(200).json({
@@ -130,7 +136,7 @@ router.put('/:_id', checkToken, async (req, res) => {
 })
 
 // mise à jour du status
-router.patch('/:_id', checkToken, async (req, res) => {
+router.patch('/:_id', checkToken, statutCheck, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
 		const { status } = req.body
@@ -200,5 +206,16 @@ router.delete('/:_id', checkToken, async (req, res) => {
 			.json({ message: " l'opération a échouée : " + error.message })
 	}
 })
+
+// router.put('/:_id', checkToken, upload.single('picture'), async (req, res) => {
+// 	try {
+// 		const { _id } = req.params
+// 		const userId = req.userId
+// 		const pictureData = {
+// 			picture: req.file.filename,
+// 		}
+// 		const result = await insertPictureTicket({ picture })
+// 	} catch (error) {}
+// })
 
 module.exports = router

@@ -23,7 +23,7 @@ const {
 } = require('../model/reset-password/reset-password.model')
 const { mailProcessor } = require('../services/emailSender')
 const {
-	createUserChecker,
+	createUserCheck,
 	loginCheck,
 	resetMailCheck,
 	updatePwdMailCheck,
@@ -35,7 +35,7 @@ router.all('/', (req, res, next) => {
 })
 
 // création d'un utilisateur
-router.post('/', createUserChecker, async (req, res) => {
+router.post('/', createUserCheck, async (req, res) => {
 	const { firstname, lastname, company, address, phone, email, password } =
 		req.body
 	try {

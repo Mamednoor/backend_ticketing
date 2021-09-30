@@ -26,4 +26,6 @@ yarn-error.log*
 conf.js
 rest.http
 
-/assets
+.png
+.jpeg
+.jpg

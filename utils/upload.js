@@ -7,10 +7,21 @@ const storage = multer.diskStorage({
 	},
 	filename: function (req, file, callback) {
 		const d = new Date()
-		const date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-		console.log(date)
+		const date =
+			d.getFullYear() +
+			'-' +
+			(d.getMonth() + 1) +
+			'-' +
+			d.getDate() +
+			'-' +
+			d.getHours() +
+			'-' +
+			d.getMinutes() +
+			'-' +
+			d.getSeconds()
 		const filename = file.originalname.replace(/ /g, '-')
 		const dateFilename = date + '-' + filename
+		console.log('dateFilemane : ', dateFilename)
 		callback(null, dateFilename)
 	},
 })
@@ -20,7 +31,11 @@ const upload = multer({
 	fileFilter: function (req, file, callback) {
 		const ext = path.extname(file.originalname)
 		if (ext !== '.png' && ext !== '.jpg' && ext !== '.svg' && ext !== '.jpeg') {
-			return callback(new Error('Only images are allowed'))
+			return callback(
+				new Error(
+					'Seul les images avec les extensions suivantes sont acceptées: jpg, svg, png, jpeg',
+				),
+			)
 		}
 		callback(null, true)
 	},
