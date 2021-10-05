@@ -13,6 +13,9 @@ const PORT = process.env.PORT || 8080
 app.use(helmet())
 // gestion des erreur cors
 app.use(cors())
+// configuration du corps bodyParser
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.json()) // for parsing application/json
 
 // connexion à MongoDB
 mongoose.connect(process.env.DB_URL, {
@@ -36,10 +39,6 @@ if (process.env.NODE_ENV !== 'production') {
 	// gestion des connections
 	app.use(morgan('dev'))
 }
-
-// configuration du corps bodyParser
-app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-app.use(bodyParser.json()) // for parsing application/json
 
 //appel les routes dans un fichier commun
 app.use('/', routes.api)
