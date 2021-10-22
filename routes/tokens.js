@@ -38,13 +38,17 @@ router.get('/', async (req, res, next) => {
 			// sinon création d'un nouveau token
 			const accessToken = await createAccessToken(decoded.email, userProfil._id)
 
-			return res.status(200).json({ message: 'Opération réussie', accessToken })
+			return res
+				.status(200)
+				.json({ status: 'success', message: 'Opération réussie', accessToken })
 			//console.log(new Date(tokenExp));
 			// retour ensuite dans le middlewares ckeckToken pour supprimer les anciens token de la bdd
 		}
 	}
 
-	res.status(403).json({ message: 'Une erreur est survenue' })
+	res.status(403).json({
+		message: 'Une erreur est survenue',
+	})
 })
 
 module.exports = router

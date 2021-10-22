@@ -63,7 +63,7 @@ router.post('/', createUserCheck, async (req, res) => {
 	} catch (error) {
 		console.log("erreur lors de la création de l'utilisateur", error)
 		res.status(400).json({
-			message: error.message,
+			message: "erreur lors de la création de l'utilisateur",
 		})
 	}
 })
@@ -72,8 +72,18 @@ router.post('/', createUserCheck, async (req, res) => {
 router.get('/profil', checkToken, async (req, res) => {
 	const _id = req.userId
 	const userProfil = await getUserById(_id)
+
+	const { firstname, lastname, company, address, phone, email } = userProfil
 	res.json({
-		user: userProfil,
+		user: {
+			_id,
+			firstname,
+			lastname,
+			company,
+			address,
+			phone,
+			email,
+		},
 	})
 })
 

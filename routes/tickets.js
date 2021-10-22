@@ -73,11 +73,11 @@ router.post(
 			const ticketObjt = {
 				clientId: userId,
 				subject,
-				picture,
 				conversations: [
 					{
 						sender,
 						message,
+						picture,
 					},
 				],
 			}

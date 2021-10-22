@@ -24,9 +24,6 @@ const TicketSchema = new Schema({
 		required: true,
 		default: 'En Attente',
 	},
-	picture: {
-		type: String,
-	},
 	conversations: [
 		{
 			sender: {
@@ -49,6 +46,9 @@ const TicketSchema = new Schema({
 				type: Date,
 				required: true,
 				default: Date.now(),
+			},
+			picture: {
+				type: String,
 			},
 		},
 	],
