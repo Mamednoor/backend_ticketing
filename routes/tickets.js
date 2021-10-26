@@ -136,29 +136,34 @@ router.put('/:_id', checkToken, replyTicketCheck, async (req, res) => {
 })
 
 // mise à jour du status
-router.patch('/:_id', checkToken, statutCheck, async (req, res) => {
-	try {
-		// query selector de l'id du ticket
-		const { status } = req.body
-		const { _id } = req.params
-		const userId = req.userId
-		const result = await updateStatusTicket({ _id, userId, status })
+router.patch(
+	'/status-ticket/:_id',
+	checkToken,
+	statutCheck,
+	async (req, res) => {
+		try {
+			// query selector de l'id du ticket
+			const { status } = req.body
+			const { _id } = req.params
+			const userId = req.userId
+			const result = await updateStatusTicket({ _id, userId, status })
 
-		if (result._id) {
-			return res.status(200).json({
-				status: 'success',
-				message: 'Statut du ticket mis à jour',
-				result,
+			if (result._id) {
+				return res.status(200).json({
+					status: 'success',
+					message: 'Statut du ticket mis à jour',
+					result,
+				})
+			}
+
+			res.status(400).json({
+				message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
 			})
+		} catch (error) {
+			res.status(400).json({ message: error.message })
 		}
-
-		res.status(400).json({
-			message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
-		})
-	} catch (error) {
-		res.status(400).json({ message: error.message })
-	}
-})
+	},
+)
 
 // fermeture d'un ticket
 router.patch('/close-ticket/:_id', checkToken, async (req, res) => {

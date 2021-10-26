@@ -58,6 +58,10 @@ app.use((error, req, res, next) => {
 	handleError(error, res)
 })
 
+const d = new Date()
+const date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+console.log(date)
+
 app.listen(PORT, () => {
-	console.log(`API is running on http://localhost:${PORT}`)
+	console.log(`API is running on http://localhost:${PORT} since ${date}`)
 })

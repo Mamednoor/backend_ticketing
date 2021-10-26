@@ -14,7 +14,7 @@ const insertTicket = (ticketObjt) => {
 	})
 }
 
-// enregistrement d'un ticket en BDD
+// enregistrement d'un ticket avec image
 const insertPictureTicket = (pictureData) => {
 	return new Promise((resolve, reject) => {
 		try {
