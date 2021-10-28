@@ -60,7 +60,7 @@ router.get('/:_id', checkToken, async (req, res) => {
 
 // création d'un ticket
 router.post(
-	'/',
+	'/add-ticket',
 	checkToken,
 	createTicketCheck,
 	upload.single('picture'),
@@ -68,7 +68,7 @@ router.post(
 		try {
 			const userId = req.userId
 			const { subject, sender, message } = req.body
-			const picture = req.file.filename
+			//const picture = req.file.filename
 
 			const ticketObjt = {
 				clientId: userId,
@@ -77,7 +77,7 @@ router.post(
 					{
 						sender,
 						message,
-						picture,
+						//picture,
 					},
 				],
 			}

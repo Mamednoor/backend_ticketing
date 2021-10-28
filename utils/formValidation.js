@@ -90,7 +90,12 @@ const updatePwdMailCheck = (req, res, next) => {
 }
 
 const createTicketCheck = (req, res, next) => {
-	const schema = Joi.object({ newTicket })
+	const schema = Joi.object().keys({
+		subject: Joi.string().min(10).max(100).required(),
+		sender: Joi.string().min(5).max(30).required(),
+		message: Joi.string().min(10).max(500).required(),
+		//createdOn: Joi.date().iso(),
+	})
 
 	const value = schema.validate(req.body)
 
