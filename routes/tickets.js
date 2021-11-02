@@ -17,7 +17,7 @@ const {
 	statutCheck,
 	replyTicketCheck,
 } = require('../utils/formValidation')
-const { upload } = require('../utils/upload')
+// const { upload } = require('../utils/upload')
 
 router.all('/', (req, res, next) => {
 	// res.json({ message: " get tickets route" });
@@ -27,9 +27,9 @@ router.all('/', (req, res, next) => {
 // recuperer tout les tickets d'un utilisateur
 router.get('/', checkToken, async (req, res) => {
 	try {
-		const userId = req.userId
+		const clientId = req.userId
 		// récupére tout les tickets d'un utilisateur en fonction de son ID
-		const result = await getTickets(userId)
+		const result = await getTickets(clientId)
 
 		return res.status(200).json({
 			status: 'success',
@@ -46,8 +46,8 @@ router.get('/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
 		const { _id } = req.params
-		const userId = req.userId
-		const result = await getOneTicket(_id, userId)
+		const clientId = req.userId
+		const result = await getOneTicket(_id, clientId)
 
 		return res.status(200).json({
 			status: 'success',
@@ -63,21 +63,20 @@ router.post(
 	'/add-ticket',
 	checkToken,
 	createTicketCheck,
-	upload.single('picture'),
+	//upload.single('picture'),
 	async (req, res) => {
 		try {
-			const userId = req.userId
+			const clientId = req.userId
 			const { subject, sender, message } = req.body
 			//const picture = req.file.filename
 
 			const ticketObjt = {
-				clientId: userId,
+				clientId: clientId,
 				subject,
 				conversations: [
 					{
 						sender,
 						message,
-						//picture,
 					},
 				],
 			}
@@ -110,11 +109,11 @@ router.put('/:_id', checkToken, replyTicketCheck, async (req, res) => {
 		const { sender, message } = req.body
 		// query selector de l'id du ticket
 		const { _id } = req.params
-		const userId = req.userId
+		const clientId = req.userId
 
 		const result = await updateMessageTicket({
 			_id,
-			userId,
+			clientId,
 			sender,
 			message,
 		})
@@ -145,8 +144,8 @@ router.patch(
 			// query selector de l'id du ticket
 			const { status } = req.body
 			const { _id } = req.params
-			const userId = req.userId
-			const result = await updateStatusTicket({ _id, userId, status })
+			const clientId = req.userId
+			const result = await updateStatusTicket({ _id, clientId, status })
 
 			if (result._id) {
 				return res.status(200).json({
@@ -170,8 +169,8 @@ router.patch('/close-ticket/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
 		const { _id } = req.params
-		const userId = req.userId
-		const result = await ticketClosing({ _id, userId })
+		const clientId = req.userId
+		const result = await ticketClosing({ _id, clientId })
 
 		if (result._id) {
 			return res.status(200).json({
@@ -194,8 +193,8 @@ router.delete('/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
 		const { _id } = req.params
-		const userId = req.userId
-		const result = await deleteTicket({ _id, userId })
+		const clientId = req.userId
+		const result = await deleteTicket({ _id, clientId })
 
 		if (result._id == null) {
 			res.json({
@@ -215,7 +214,7 @@ router.delete('/:_id', checkToken, async (req, res) => {
 // router.put('/:_id', checkToken, upload.single('picture'), async (req, res) => {
 // 	try {
 // 		const { _id } = req.params
-// 		const userId = req.userId
+// 		const clientId = req.userId
 // 		const pictureData = {
 // 			picture: req.file.filename,
 // 		}

@@ -15,11 +15,24 @@ const insertTicket = (ticketObjt) => {
 }
 
 // enregistrement d'un ticket avec image
-const insertPictureTicket = (pictureData) => {
+// const insertPictureTicket = (pictureData) => {
+// 	return new Promise((resolve, reject) => {
+// 		try {
+// 			TicketSchema(pictureData)
+// 				.save()
+// 				.then((data) => resolve(data))
+// 				.catch((error) => reject(error))
+// 		} catch (error) {
+// 			reject(error)
+// 		}
+// 	})
+// }
+
+// récupération des tickets d'un utilisateur en fonction de son ID
+const getTickets = (clientId) => {
 	return new Promise((resolve, reject) => {
 		try {
-			TicketSchema(pictureData)
-				.save()
+			TicketSchema.find({ clientId })
 				.then((data) => resolve(data))
 				.catch((error) => reject(error))
 		} catch (error) {
@@ -29,23 +42,10 @@ const insertPictureTicket = (pictureData) => {
 }
 
 // récupération des tickets d'un utilisateur en fonction de son ID
-const getTickets = (userId) => {
+const getOneTicket = (_id, clientId) => {
 	return new Promise((resolve, reject) => {
 		try {
-			TicketSchema.find({ userId })
-				.then((data) => resolve(data))
-				.catch((error) => reject(error))
-		} catch (error) {
-			reject(error)
-		}
-	})
-}
-
-// récupération des tickets d'un utilisateur en fonction de son ID
-const getOneTicket = (_id, userId) => {
-	return new Promise((resolve, reject) => {
-		try {
-			TicketSchema.find({ _id, userId })
+			TicketSchema.find({ _id, clientId })
 				.then((data) => resolve(data))
 				.catch((error) => reject(error))
 		} catch (error) {
@@ -55,11 +55,11 @@ const getOneTicket = (_id, userId) => {
 }
 
 // mise à jour d'un ticket en fonction de son ID
-const updateMessageTicket = ({ _id, userId, sender, message }) => {
+const updateMessageTicket = ({ _id, clientId, sender, message }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndUpdate(
-				{ _id, userId },
+				{ _id, clientId },
 				{
 					$push: {
 						conversations: { sender, message },
@@ -76,11 +76,11 @@ const updateMessageTicket = ({ _id, userId, sender, message }) => {
 }
 
 // récupération des tickets d'un utilisateur en fonction de son ID
-const updateStatusTicket = ({ _id, userId, status }) => {
+const updateStatusTicket = ({ _id, clientId, status }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndUpdate(
-				{ _id, userId },
+				{ _id, clientId },
 				{
 					status,
 				},
@@ -95,11 +95,11 @@ const updateStatusTicket = ({ _id, userId, status }) => {
 }
 
 // récupération des tickets d'un utilisateur en fonction de son ID
-const ticketClosing = ({ _id, userId }) => {
+const ticketClosing = ({ _id, clientId }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndUpdate(
-				{ _id, userId },
+				{ _id, clientId },
 				{
 					status: 'Fermé',
 				},
@@ -114,10 +114,10 @@ const ticketClosing = ({ _id, userId }) => {
 }
 
 // suppression d'un ticket
-const deleteTicket = ({ _id, userId }) => {
+const deleteTicket = ({ _id, clientId }) => {
 	return new Promise((resolve, reject) => {
 		try {
-			TicketSchema.findOneAndDelete({ _id, userId })
+			TicketSchema.findOneAndDelete({ _id, clientId })
 				.then((data) => resolve(data))
 				.catch((error) => reject(error))
 		} catch (error) {
@@ -128,7 +128,7 @@ const deleteTicket = ({ _id, userId }) => {
 
 module.exports = {
 	insertTicket,
-	insertPictureTicket,
+	// insertPictureTicket,
 	getTickets,
 	getOneTicket,
 	updateMessageTicket,

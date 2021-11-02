@@ -59,11 +59,9 @@ const storeUserRefreshToken = (_id, token) => {
 			)
 				.then((data) => resolve(data))
 				.catch((error) => {
-					console.log('1er catch', error)
 					reject(error)
 				})
 		} catch (error) {
-			console.log('2eme catch', error)
 			reject(error)
 		}
 	})
@@ -84,11 +82,9 @@ const updatePassword = (email, newPassword) => {
 			)
 				.then((data) => resolve(data))
 				.catch((error) => {
-					console.log('1er catch', error)
 					reject(error)
 				})
 		} catch (error) {
-			console.log('2eme catch', error)
 			reject(error)
 		}
 	})

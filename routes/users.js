@@ -52,16 +52,16 @@ router.post('/', createUserCheck, async (req, res) => {
 			password: hashedPwd,
 		}
 
-		console.log('req body : ', req.body)
+		//console.log('req body : ', req.body)
 		const result = await insertUser(newUser)
 
-		console.log("création de l'utilisateur réussis", result)
+		//console.log("création de l'utilisateur réussis", result)
 		res.status(201).json({
 			message: 'Un nouvelle utilisateur a été crée',
 			result,
 		})
 	} catch (error) {
-		console.log("erreur lors de la création de l'utilisateur", error)
+		//console.log("erreur lors de la création de l'utilisateur", error)
 		res.status(400).json({
 			message: "erreur lors de la création de l'utilisateur",
 		})
@@ -153,7 +153,7 @@ router.post('/reset-password', checkToken, resetMailCheck, async (req, res) => {
 			type: 'Reset-Password',
 		})
 
-		console.log(setCode)
+		//console.log(setCode)
 
 		return res.status(200).json({
 			message: 'Un mail de ré-initialisation vous sera envoyé',

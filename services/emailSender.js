@@ -17,11 +17,12 @@ const send = (mailler) => {
 			// send mail with defined transport object
 			let result = await transporter.sendMail(mailler)
 
-			console.log('Message sent: %s', result.messageId)
+			//console.log('Message sent: ', result.messageId)
 
 			resolve(result)
 		} catch (error) {
 			console.log(error)
+			reject(error)
 		}
 	})
 }

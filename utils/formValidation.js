@@ -22,12 +22,6 @@ const password = Joi.string().alphanum().min(8).max(30).required()
 const resetCode = Joi.string().min(15).max(15).required()
 const newPassword = Joi.string().alphanum().min(8).max(30).required()
 
-const newTicket = Joi.object().keys({
-	subject: Joi.string().min(10).max(100).required(),
-	sender: Joi.string().alphanum().min(5).max(30).required(),
-	message: Joi.string().min(10).max(500).required(),
-})
-
 // fonction de validation
 const createUserCheck = (req, res, next) => {
 	const schema = Joi.object({
@@ -94,15 +88,12 @@ const createTicketCheck = (req, res, next) => {
 		subject: Joi.string().min(10).max(100).required(),
 		sender: Joi.string().min(5).max(30).required(),
 		message: Joi.string().min(10).max(500).required(),
-		//createdOn: Joi.date().iso(),
 	})
 
-	const value = schema.validate(req.body)
-
-	if (value.error) {
-		return res
-			.status(400)
-			.json({ status: 'error', message: value.error.message })
+	const values = schema.validate(req.body)
+	//console.log(' value create ticket :', values)
+	if (values.error) {
+		return res.status(400).json({ status: 'error', message: res.error.message })
 	}
 	next()
 }

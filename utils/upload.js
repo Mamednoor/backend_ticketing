@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 			d.getSeconds()
 		const filename = file.originalname.replace(/ /g, '-')
 		const dateFilename = date + '-' + filename
-		console.log('dateFilemane : ', dateFilename)
+		//console.log('dateFilemane : ', dateFilename)
 		callback(null, dateFilename)
 	},
 })

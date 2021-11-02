@@ -47,9 +47,9 @@ const TicketSchema = new Schema({
 				required: true,
 				default: Date.now(),
 			},
-			picture: {
-				type: String,
-			},
+			// picture: {
+			// 	type: String,
+			// },
 		},
 	],
 })
