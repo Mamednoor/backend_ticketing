@@ -33,6 +33,7 @@ const UserSchema = new Schema({
 		minlength: 10,
 		maxlength: 10,
 		required: true,
+		trim: true,
 	},
 	email: {
 		type: String,
@@ -46,6 +47,7 @@ const UserSchema = new Schema({
 		minlength: 8,
 		maxlength: 150,
 		required: true,
+		trim: true,
 	},
 	refreshToken: {
 		token: {

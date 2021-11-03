@@ -52,17 +52,22 @@ router.post('/', createUserCheck, async (req, res) => {
 			password: hashedPwd,
 		}
 
-		//console.log('req body : ', req.body)
 		const result = await insertUser(newUser)
 
-		//console.log("création de l'utilisateur réussis", result)
 		res.status(201).json({
+			status: 'success',
 			message: 'Un nouvelle utilisateur a été crée',
 			result,
 		})
 	} catch (error) {
 		//console.log("erreur lors de la création de l'utilisateur", error)
+		let message =
+			'Une erreur est survenue, nous ne pouvons répondre à votre requête, veuillez réessayer ultérieurement'
+		if (error.message.includes('duplicate key error collection')) {
+			message = "L'adresse mail est déjà utilisée"
+		}
 		res.status(400).json({
+			status: 'error',
 			message: "erreur lors de la création de l'utilisateur",
 		})
 	}

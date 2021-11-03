@@ -3,7 +3,7 @@ const Joi = require('joi')
 // les diffférents schéma à valider
 const firstname = Joi.string().alphanum().min(5).max(30).required()
 const lastname = Joi.string().alphanum().min(2).max(30).required()
-const company = Joi.string().alphanum().min(3).max(50).required()
+const company = Joi.string().min(3).max(50).required()
 const address = Joi.string().max(150).required()
 // validation du numéro de téléphone, téléphone colonne String,
 // min et max length à 10 regex pour le numéro de téléphone en francais
@@ -18,7 +18,7 @@ const email = Joi.string().email({
 	tlds: { allow: ['com', 'net', 'fr', 'org', 'io'] },
 })
 
-const password = Joi.string().alphanum().min(8).max(30).required()
+const password = Joi.string().min(8).max(30).required()
 const resetCode = Joi.string().min(15).max(15).required()
 const newPassword = Joi.string().alphanum().min(8).max(30).required()
 

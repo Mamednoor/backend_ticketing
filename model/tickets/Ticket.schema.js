@@ -12,6 +12,7 @@ const TicketSchema = new Schema({
 		trim: true,
 		required: true,
 		default: '',
+		trim: true,
 	},
 	createdOn: {
 		type: Date,
@@ -41,6 +42,7 @@ const TicketSchema = new Schema({
 				trim: true,
 				required: true,
 				default: '',
+				trim: true,
 			},
 			msgAt: {
 				type: Date,
