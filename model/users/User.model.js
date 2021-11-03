@@ -90,10 +90,36 @@ const updatePassword = (email, newPassword) => {
 	})
 }
 
+const verifyAccount = (_id, email) => {
+	return new Promise((resolve, reject) => {
+		try {
+			UserSchema.findOneAndUpdate(
+				// filtre sur l'id
+				{ _id, email, isVerified: false },
+				// la donnée à mettre à jour
+				{
+					isVerified: true,
+				},
+				// retour du dernier update de donnée
+				{ new: true },
+			)
+				.then((data) => resolve(data))
+				.catch((error) => {
+					console.log(error.message)
+
+					reject(error)
+				})
+		} catch (error) {
+			console.log(error.message)
+			reject(error)
+		}
+	})
+}
 module.exports = {
 	insertUser,
 	getUserById,
 	getUserByEmail,
 	storeUserRefreshToken,
 	updatePassword,
+	verifyAccount,
 }

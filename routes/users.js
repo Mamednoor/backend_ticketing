@@ -5,8 +5,9 @@ const {
 	insertUser,
 	getUserById,
 	getUserByEmail,
-	updatePassword,
 	storeUserRefreshToken,
+	updatePassword,
+	verifyAccount,
 } = require('../model/users/User.model')
 
 const { hashPassword, comparePassword } = require('../services/bcrypt')
@@ -29,6 +30,8 @@ const {
 	updatePwdMailCheck,
 } = require('../utils/formValidation')
 const { deleteToken } = require('../services/redis')
+
+const activationURL = process.env.URL_LINK + 'validation/'
 
 router.all('/', (req, res, next) => {
 	next()
@@ -54,21 +57,53 @@ router.post('/', createUserCheck, async (req, res) => {
 
 		const result = await insertUser(newUser)
 
+		await mailProcessor({
+			email,
+			type: 'User-Confirmation',
+			activationLink: activationURL + result._id + '/' + email,
+		})
 		res.status(201).json({
 			status: 'success',
 			message: 'Un nouvelle utilisateur a été crée',
 			result,
 		})
 	} catch (error) {
-		//console.log("erreur lors de la création de l'utilisateur", error)
 		let message =
 			'Une erreur est survenue, nous ne pouvons répondre à votre requête, veuillez réessayer ultérieurement'
 		if (error.message.includes('duplicate key error collection')) {
 			message = "L'adresse mail est déjà utilisée"
 		}
-		res.status(400).json({
+		res.json({
 			status: 'error',
 			message: "erreur lors de la création de l'utilisateur",
+		})
+	}
+})
+
+// vérification / activation du compte
+
+router.patch('/validation', async (req, res) => {
+	try {
+		const { _id, email } = req.body
+
+		const result = await verifyAccount(_id, email)
+
+		if (result && result._id) {
+			return res.json({
+				status: 'success',
+				message: ` Votre compte est activé, vous pouvez vous connecter`,
+			})
+		}
+
+		return res.json({
+			status: 'error',
+			message: 'Une erreur est survenue, veuillez essayer ultérieurement',
+		})
+	} catch (error) {
+		console.log(error)
+		return res.json({
+			status: 'error',
+			message: error.message,
 		})
 	}
 })
@@ -105,6 +140,14 @@ router.post('/login', loginCheck, async (req, res) => {
 
 	const user = await getUserByEmail(email)
 
+	if (!user.isVerified) {
+		return res.json({
+			status: 'error',
+			message:
+				'Veuillez vérifier vos mails et activer votre compte avec le lien transmis',
+		})
+	}
+
 	const pwdCompare = user && user._id ? user.password : null
 
 	if (!pwdCompare)
@@ -124,7 +167,7 @@ router.post('/login', loginCheck, async (req, res) => {
 	const accessToken = await createAccessToken(user.email, `${user._id}`)
 	const refreshToken = await createRefreshToken(user.email, `${user._id}`)
 
-	res.status(200).json({
+	res.json({
 		status: 'success',
 		message: 'Connexion réussie',
 		accessToken,
@@ -142,7 +185,7 @@ router.delete('/logout', checkToken, async (req, res) => {
 	deleteToken(token)
 	const result = await storeUserRefreshToken(_id, '')
 
-	res.status(200).json({ messeage: 'Déconnexion réussie' })
+	res.json({ messeage: 'Déconnexion réussie' })
 })
 
 // réinitialisation du mot de passe
@@ -158,9 +201,7 @@ router.post('/reset-password', checkToken, resetMailCheck, async (req, res) => {
 			type: 'Reset-Password',
 		})
 
-		//console.log(setCode)
-
-		return res.status(200).json({
+		return res.json({
 			message: 'Un mail de ré-initialisation vous sera envoyé',
 		})
 	}
@@ -197,13 +238,11 @@ router.patch('/reset-password', updatePwdMailCheck, async (req, res) => {
 
 			deleteOldCode(email, resetCode)
 
-			return res
-				.status(200)
-				.json({ message: 'Votre mot de passe a été mis à jour' })
+			return res.json({ message: 'Votre mot de passe a été mis à jour' })
 		}
 	}
 
-	return res.status(400).json({
+	return res.json({
 		message: "L'opération a échoué, veuillez réessayer ultérieurement",
 	})
 })

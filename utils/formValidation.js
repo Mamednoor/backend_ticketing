@@ -37,9 +37,7 @@ const createUserCheck = (req, res, next) => {
 	const value = schema.validate(req.body)
 
 	if (value.error) {
-		return res
-			.status(400)
-			.json({ status: 'error', message: value.error.message })
+		return res.json({ status: 'error', message: value.error.message })
 	}
 	next()
 }
@@ -50,9 +48,7 @@ const loginCheck = (req, res, next) => {
 	const value = schema.validate(req.body)
 
 	if (value.error) {
-		return res
-			.status(400)
-			.json({ status: 'error', message: value.error.message })
+		return res.json({ status: 'error', message: value.error.message })
 	}
 	next()
 }
@@ -63,9 +59,7 @@ const resetMailCheck = (req, res, next) => {
 	const value = schema.validate(req.body)
 
 	if (value.error) {
-		return res
-			.status(400)
-			.json({ status: 'error', message: value.error.message })
+		return res.json({ status: 'error', message: value.error.message })
 	}
 	next()
 }
@@ -76,9 +70,7 @@ const updatePwdMailCheck = (req, res, next) => {
 	const value = schema.validate(req.body)
 
 	if (value.error) {
-		return res
-			.status(400)
-			.json({ status: 'error', message: value.error.message })
+		return res.json({ status: 'error', message: value.error.message })
 	}
 	next()
 }
@@ -91,9 +83,8 @@ const createTicketCheck = (req, res, next) => {
 	})
 
 	const values = schema.validate(req.body)
-	//console.log(' value create ticket :', values)
 	if (values.error) {
-		return res.status(400).json({ status: 'error', message: res.error.message })
+		return res.json({ status: 'error', message: res.error.message })
 	}
 	next()
 }
@@ -107,9 +98,7 @@ const replyTicketCheck = (req, res, next) => {
 	const value = schema.validate(req.body)
 
 	if (value.error) {
-		return res
-			.status(400)
-			.json({ status: 'error', message: value.error.message })
+		return res.json({ status: 'error', message: value.error.message })
 	}
 	next()
 }
@@ -122,9 +111,7 @@ const statutCheck = (req, res, next) => {
 	const value = schema.validate(req.body)
 
 	if (value.error) {
-		return res
-			.status(400)
-			.json({ status: 'error', message: value.error.message })
+		return res.json({ status: 'error', message: value.error.message })
 	}
 	next()
 }

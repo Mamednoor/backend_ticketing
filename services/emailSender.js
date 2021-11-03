@@ -17,8 +17,6 @@ const send = (mailler) => {
 			// send mail with defined transport object
 			let result = await transporter.sendMail(mailler)
 
-			//console.log('Message sent: ', result.messageId)
-
 			resolve(result)
 		} catch (error) {
 			console.log(error)
@@ -27,7 +25,7 @@ const send = (mailler) => {
 	})
 }
 
-const mailProcessor = ({ email, code, type }) => {
+const mailProcessor = ({ email, code, type, activationLink = '' }) => {
 	let mailer = ''
 	switch (type) {
 		case 'Reset-Password':
@@ -58,6 +56,19 @@ const mailProcessor = ({ email, code, type }) => {
 						Votre mot de passe a été mise à jour 
 					<p>Vous pouvez de nouveau vous connecter</p>
 					<p>Cordialement.</p>`, // html body
+			}
+			send(mailler)
+			break
+		case 'User-Confirmation':
+			mailler = {
+				from: '"MNG Company" <compteservicecda@gmail.com>', // sender address
+				to: email, // list of receivers
+				subject: 'Validation de la création de votre compte utilisateur', // Subject line
+				text: 'Merci de suivre le lien suivant pour la validation de votre compte ', // plain text body
+				html: `<p>Bonjour,</p>
+							Merci de suivre le lien suivant pour la validation de votre compte 
+						<p>${activationLink}</p>
+						<p>Cordialement.</p>`, // html body
 			}
 			send(mailler)
 			break

@@ -31,30 +31,29 @@ router.get('/', checkToken, async (req, res) => {
 		// récupére tout les tickets d'un utilisateur en fonction de son ID
 		const result = await getTickets(clientId)
 
-		return res.status(200).json({
+		return res.json({
 			status: 'success',
 			result,
 		})
 	} catch (error) {
-		res.status(400).json({ message: error.message })
+		res.json({ message: error.message })
 	}
 })
 
 // recuperer un ticket en fonction de son id
 router.get('/:_id', checkToken, async (req, res) => {
-	// console.log(req.params)
 	try {
 		// query selector de l'id du ticket
 		const { _id } = req.params
 		const clientId = req.userId
 		const result = await getOneTicket(_id, clientId)
 
-		return res.status(200).json({
+		return res.json({
 			status: 'success',
 			result,
 		})
 	} catch (error) {
-		res.status(400).json({ message: error.message })
+		res.json({ message: error.message })
 	}
 })
 
@@ -84,27 +83,26 @@ router.post(
 			const result = await insertTicket(ticketObjt)
 
 			if (result._id) {
-				return res.status(200).json({
+				return res.json({
 					status: 'success',
 					message: 'Un nouveau ticket a été crée',
 					result,
 				})
 			}
 
-			res.status(400).json({
+			res.json({
 				status: 'error',
 				message: 'erreur lors de la création du ticket',
 			})
 			res.json({ status: 'error', message: error.message })
 		} catch (error) {
-			res.status(400).json({ status: 'error', message: error.message })
+			res.json({ status: 'error', message: error.message })
 		}
 	},
 )
 
 // mise à jour du ticket
 router.put('/:_id', checkToken, replyTicketCheck, async (req, res) => {
-	// console.log(req.params)
 	try {
 		const { sender, message } = req.body
 		// query selector de l'id du ticket
@@ -119,18 +117,18 @@ router.put('/:_id', checkToken, replyTicketCheck, async (req, res) => {
 		})
 
 		if (result._id) {
-			return res.status(200).json({
+			return res.json({
 				status: 'success',
 				message: 'votre réponse a bien été envoyée',
 				result,
 			})
 		}
 
-		res.status(400).json({
+		res.json({
 			message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
 		})
 	} catch (error) {
-		res.status(400).json({ message: error.message })
+		res.json({ message: error.message })
 	}
 })
 
@@ -148,18 +146,18 @@ router.patch(
 			const result = await updateStatusTicket({ _id, clientId, status })
 
 			if (result._id) {
-				return res.status(200).json({
+				return res.json({
 					status: 'success',
 					message: 'Statut du ticket mis à jour',
 					result,
 				})
 			}
 
-			res.status(400).json({
+			res.json({
 				message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
 			})
 		} catch (error) {
-			res.status(400).json({ message: error.message })
+			res.json({ message: error.message })
 		}
 	},
 )
@@ -173,23 +171,22 @@ router.patch('/close-ticket/:_id', checkToken, async (req, res) => {
 		const result = await ticketClosing({ _id, clientId })
 
 		if (result._id) {
-			return res.status(200).json({
+			return res.json({
 				status: 'success',
 				message: 'Le ticket a été fermé',
 				result,
 			})
 		}
 
-		res.status(400).json({
+		res.json({
 			message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
 		})
 	} catch (error) {
-		res.status(400).json({ message: error.message })
+		res.json({ message: error.message })
 	}
 })
 
 router.delete('/:_id', checkToken, async (req, res) => {
-	// console.log(req.params)
 	try {
 		// query selector de l'id du ticket
 		const { _id } = req.params
@@ -201,13 +198,11 @@ router.delete('/:_id', checkToken, async (req, res) => {
 				message: "l'opération a échouée, le ticket n'existe pas",
 			})
 		}
-		return res.status(200).json({
+		return res.json({
 			message: 'Votre ticket a bien été supprimée',
 		})
 	} catch (error) {
-		res
-			.status(400)
-			.json({ message: " l'opération a échouée : " + error.message })
+		res.json({ message: " l'opération a échouée : " + error.message })
 	}
 })
 

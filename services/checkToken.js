@@ -7,7 +7,6 @@ const checkToken = async (req, res, next) => {
 
 	// récuperer les informations de l'utilisateur à partir du token
 	const decoded = await verifyAccessToken(token)
-	// console.log(decoded)
 	if (decoded.email) {
 		const userId = await getToken(token)
 

@@ -38,10 +38,11 @@ router.get('/', async (req, res, next) => {
 			// sinon création d'un nouveau token
 			const accessToken = await createAccessToken(decoded.email, userProfil._id)
 
-			return res
-				.status(200)
-				.json({ status: 'success', message: 'Opération réussie', accessToken })
-			//console.log(new Date(tokenExp));
+			return res.json({
+				status: 'success',
+				message: 'Opération réussie',
+				accessToken,
+			})
 			// retour ensuite dans le middlewares ckeckToken pour supprimer les anciens token de la bdd
 		}
 	}
