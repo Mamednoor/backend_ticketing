@@ -81,7 +81,6 @@ router.post('/', createUserCheck, async (req, res) => {
 })
 
 // vérification / activation du compte
-
 router.patch('/validation', async (req, res) => {
 	try {
 		const { _id, email } = req.body
