@@ -60,9 +60,9 @@ router.post('/', createUserCheck, async (req, res) => {
 		await mailProcessor({
 			email,
 			type: 'User-Confirmation',
-			activationLink: activationURL + result._id + '/' + email,
+			activationLink: activationURL + result?._id + '/' + email,
 		})
-		res.status(201).json({
+		res.json({
 			status: 'success',
 			message: 'Un nouvelle utilisateur a été crée',
 			result,
@@ -87,7 +87,7 @@ router.patch('/validation', async (req, res) => {
 
 		const result = await verifyAccount(_id, email)
 
-		if (result && result._id) {
+		if (result && result?._id) {
 			return res.json({
 				status: 'success',
 				message: ` Votre compte est activé, vous pouvez vous connecter`,
@@ -131,40 +131,40 @@ router.post('/login', loginCheck, async (req, res) => {
 	const { email, password } = req.body
 
 	if (!email || !password) {
-		return res.status(401).json({
+		return res.json({
 			status: 'error',
 			message: 'Les informations saisies sont incorrectes',
 		})
 	}
 
 	const user = await getUserByEmail(email)
+	console.log(user)
 
-	if (!user.isVerified) {
+	if (!user?.isVerified) {
 		return res.json({
 			status: 'error',
-			message:
-				'Veuillez vérifier vos mails et activer votre compte avec le lien transmis',
+			message: "Votre compte n'existe pas ou n'est pas activé",
 		})
 	}
 
-	const pwdCompare = user && user._id ? user.password : null
+	const pwdCompare = user && user?._id ? user?.password : null
 
 	if (!pwdCompare)
-		return res.status(401).json({
+		return res.json({
 			status: 'error',
 			message: 'vos identifiants sont incorrectes',
 		})
 
 	const result = await comparePassword(password, pwdCompare)
 	if (!result) {
-		return res.status(401).json({
+		return res.json({
 			status: 'error',
 			message: 'vos identifiants sont incorrectes',
 		})
 	}
 
-	const accessToken = await createAccessToken(user.email, `${user._id}`)
-	const refreshToken = await createRefreshToken(user.email, `${user._id}`)
+	const accessToken = await createAccessToken(user?.email, `${user?._id}`)
+	const refreshToken = await createRefreshToken(user?.email, `${user?._id}`)
 
 	res.json({
 		status: 'success',
@@ -187,26 +187,28 @@ router.delete('/logout', checkToken, async (req, res) => {
 	res.json({ messeage: 'Déconnexion réussie' })
 })
 
-// réinitialisation du mot de passe
-router.post('/reset-password', checkToken, resetMailCheck, async (req, res) => {
-	const _id = req.userId
-	const user = await getUserById(_id)
+// requête de réinitialisation du mot de passe
+router.post('/forget-password', resetMailCheck, async (req, res) => {
+	const { email } = req.body
+	const user = await getUserByEmail(email)
 
-	if (user._id && user.email) {
-		const setCode = await setResetCode(user.email)
+	if (user && user?._id) {
+		const setCode = await setResetCode(email)
 		await mailProcessor({
-			email: user.email,
+			email,
 			code: setCode.resetCode,
 			type: 'Reset-Password',
 		})
 
 		return res.json({
+			status: 'success',
 			message: 'Un mail de ré-initialisation vous sera envoyé',
 		})
 	}
 
-	return res.status(403).json({
-		message: "Une erreur est survenue merci de renouveller l'opération",
+	return res.json({
+		status: 'error',
+		message: "veuillez vérifier l'email utilisé",
 	})
 })
 
@@ -216,32 +218,34 @@ router.patch('/reset-password', updatePwdMailCheck, async (req, res) => {
 
 	const getResetCode = await ResetPwdByMail(email, resetCode)
 
-	if (getResetCode._id) {
-		const createdDate = getResetCode.addedOn
+	if (getResetCode?._id) {
+		const createdDate = getResetCode?.addedOn
 		const expiresIn = 1
 
 		let expirationDate = createdDate.setDate(createdDate.getDate() + expiresIn)
 		const today = new Date()
 
 		if (today > expirationDate) {
-			return res
-				.status(403)
-				.json({ message: 'Le code utilisé est expiré ou invalide' })
+			return res.json({ message: 'Le code utilisé est expiré ou invalide' })
 		}
 
 		const hashedNewPwd = await hashPassword(newPassword)
 		const user = await updatePassword(email, hashedNewPwd)
 
-		if (user._id) {
-			await mailProcessor({ email: user.email, type: 'Password-update' })
+		if (user?._id) {
+			await mailProcessor({ email: user?.email, type: 'Password-update' })
 
 			deleteOldCode(email, resetCode)
 
-			return res.json({ message: 'Votre mot de passe a été mis à jour' })
+			return res.json({
+				status: 'success',
+				message: 'Votre mot de passe a été mis à jour',
+			})
 		}
 	}
 
 	return res.json({
+		status: 'error',
 		message: "L'opération a échoué, veuillez réessayer ultérieurement",
 	})
 })

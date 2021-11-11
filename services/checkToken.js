@@ -11,7 +11,7 @@ const checkToken = async (req, res, next) => {
 		const userId = await getToken(token)
 
 		if (!userId) {
-			return res.status(403).json({
+			return res.json({
 				message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
 			})
 		}
@@ -23,7 +23,7 @@ const checkToken = async (req, res, next) => {
 	//pour la suppression de l'ancien token en BDD
 	deleteToken(token)
 
-	return res.status(401).json({ message: 'Authorisation refusée' })
+	return res.json({ message: 'Authorisation refusée' })
 }
 
 module.exports = {

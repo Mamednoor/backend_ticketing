@@ -82,7 +82,7 @@ router.post(
 
 			const result = await insertTicket(ticketObjt)
 
-			if (result._id) {
+			if (result?._id) {
 				return res.json({
 					status: 'success',
 					message: 'Un nouveau ticket a été crée',
@@ -116,7 +116,7 @@ router.put('/:_id', checkToken, replyTicketCheck, async (req, res) => {
 			message,
 		})
 
-		if (result._id) {
+		if (result?._id) {
 			return res.json({
 				status: 'success',
 				message: 'votre réponse a bien été envoyée',
@@ -145,7 +145,7 @@ router.patch(
 			const clientId = req.userId
 			const result = await updateStatusTicket({ _id, clientId, status })
 
-			if (result._id) {
+			if (result?._id) {
 				return res.json({
 					status: 'success',
 					message: 'Statut du ticket mis à jour',
@@ -170,7 +170,7 @@ router.patch('/close-ticket/:_id', checkToken, async (req, res) => {
 		const clientId = req.userId
 		const result = await ticketClosing({ _id, clientId })
 
-		if (result._id) {
+		if (result?._id) {
 			return res.json({
 				status: 'success',
 				message: 'Le ticket a été fermé',
@@ -193,7 +193,7 @@ router.delete('/:_id', checkToken, async (req, res) => {
 		const clientId = req.userId
 		const result = await deleteTicket({ _id, clientId })
 
-		if (result._id == null) {
+		if (result?._id == null) {
 			res.json({
 				message: "l'opération a échouée, le ticket n'existe pas",
 			})
