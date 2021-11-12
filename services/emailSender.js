@@ -25,7 +25,13 @@ const send = (mailler) => {
 	})
 }
 
-const mailProcessor = ({ email, code, type, activationLink = '' }) => {
+const mailProcessor = ({
+	email,
+	code,
+	type,
+	activationLink = '',
+	resetPasswordLink = '',
+}) => {
 	let mailer = ''
 	switch (type) {
 		case 'Reset-Password':
@@ -41,6 +47,8 @@ const mailProcessor = ({ email, code, type, activationLink = '' }) => {
 					Voici votre code de ré-initialisation 
 					<b>${code}</b>
 					ce code est valable pendant 24H
+					<p>Merci de suivre le lien afin de modifier de votre mot de passe</p>
+					<p>${resetPasswordLink}</p>
 					<p>Merci de ne pas répondre à ce mail</p>
 					<p>Cordialement.</p>`, // html body
 			}

@@ -31,7 +31,7 @@ const {
 } = require('../utils/formValidation')
 const { deleteToken } = require('../services/redis')
 
-const activationURL = process.env.URL_LINK + 'validation/'
+const URL = process.env.URL_LINK
 
 router.all('/', (req, res, next) => {
 	next()
@@ -60,7 +60,7 @@ router.post('/', createUserCheck, async (req, res) => {
 		await mailProcessor({
 			email,
 			type: 'User-Confirmation',
-			activationLink: activationURL + result?._id + '/' + email,
+			activationLink: URL + 'validation/' + result?._id + '/' + email,
 		})
 		res.json({
 			status: 'success',
@@ -198,11 +198,13 @@ router.post('/forget-password', resetMailCheck, async (req, res) => {
 			email,
 			code: setCode.resetCode,
 			type: 'Reset-Password',
+			resetPasswordLink: URL + 'reset-password/' + user?._id + '/' + email,
 		})
 
 		return res.json({
 			status: 'success',
-			message: 'Un mail de ré-initialisation vous sera envoyé',
+			message:
+				'Un mail de ré-initialisation vous sera envoyé dans quelques instant, vous allez être re-dirigé vers la page de connexion',
 		})
 	}
 

@@ -20,7 +20,7 @@ const email = Joi.string().email({
 
 const password = Joi.string().min(8).max(30).required()
 const resetCode = Joi.string().min(15).max(15).required()
-const newPassword = Joi.string().alphanum().min(8).max(30).required()
+const newPassword = Joi.string().min(8).max(30).required()
 
 // fonction de validation
 const createUserCheck = (req, res, next) => {
