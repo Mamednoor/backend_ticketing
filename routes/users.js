@@ -208,7 +208,7 @@ router.post('/forget-password', resetMailCheck, async (req, res) => {
 
 	return res.json({
 		status: 'error',
-		message: "veuillez vérifier l'email utilisé",
+		message: "Veuillez vérifier l'adresse email utilisé",
 	})
 })
 
