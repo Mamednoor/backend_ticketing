@@ -75,7 +75,7 @@ const updateMessageTicket = ({ _id, clientId, sender, message }) => {
 	})
 }
 
-// récupération des tickets d'un utilisateur en fonction de son ID
+// mise a jour du status d'un ticket
 const updateStatusTicket = ({ _id, clientId, status }) => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -94,7 +94,7 @@ const updateStatusTicket = ({ _id, clientId, status }) => {
 	})
 }
 
-// récupération des tickets d'un utilisateur en fonction de son ID
+// fermeture d'un ticket
 const ticketClosing = ({ _id, clientId }) => {
 	return new Promise((resolve, reject) => {
 		try {
