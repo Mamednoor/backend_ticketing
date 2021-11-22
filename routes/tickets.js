@@ -4,11 +4,13 @@ const router = express.Router()
 const {
 	insertTicket,
 	insertPictureTicket,
+	getAllTickets,
 	getTickets,
 	getOneTicket,
 	updateMessageTicket,
 	updateStatusTicket,
 	ticketClosing,
+	ticketInProgress,
 	deleteTicket,
 } = require('../model/tickets/Ticket.model')
 const { checkToken } = require('../services/checkToken')
@@ -30,6 +32,22 @@ router.get('/', checkToken, async (req, res) => {
 		const clientId = req.userId
 		// récupére tout les tickets d'un utilisateur en fonction de son ID
 		const result = await getTickets(clientId)
+
+		return res.json({
+			status: 'success',
+			result,
+		})
+	} catch (error) {
+		res.json({ message: error.message })
+	}
+})
+
+// recuperer tout les tickets
+router.get('/all', checkToken, async (req, res) => {
+	try {
+		//const clientId = req.userId
+		// récupére tout les tickets d'un utilisateur en fonction de son ID
+		const result = await getAllTickets()
 
 		return res.json({
 			status: 'success',
@@ -181,7 +199,32 @@ router.patch('/close-ticket/:_id', checkToken, async (req, res) => {
 	}
 })
 
-router.delete('/:_id', checkToken, async (req, res) => {
+// fermeture d'un ticket
+router.patch('/inprogress-ticket/:_id', checkToken, async (req, res) => {
+	try {
+		// query selector de l'id du ticket
+		const { _id } = req.params
+		const clientId = req.userId
+		const result = await ticketInProgress({ _id, clientId })
+
+		if (result?._id) {
+			return res.json({
+				status: 'success',
+				message: 'Le ticket est pris en compte',
+				result,
+			})
+		}
+
+		res.json({
+			message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
+		})
+	} catch (error) {
+		res.json({ message: error.message })
+	}
+})
+
+// suppression d'un ticket
+router.delete('/delete/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
 		const { _id } = req.params

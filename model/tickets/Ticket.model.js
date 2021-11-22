@@ -28,6 +28,18 @@ const insertTicket = (ticketObjt) => {
 // 	})
 // }
 
+const getAllTickets = () => {
+	return new Promise((resolve, reject) => {
+		try {
+			TicketSchema.find()
+				.then((data) => resolve(data))
+				.catch((error) => reject(error))
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
 // récupération des tickets d'un utilisateur en fonction de son ID
 const getTickets = (clientId) => {
 	return new Promise((resolve, reject) => {
@@ -94,6 +106,25 @@ const updateStatusTicket = ({ _id, clientId, status }) => {
 	})
 }
 
+// prise en compte d'un ticket
+const ticketInProgress = ({ _id, clientId }) => {
+	return new Promise((resolve, reject) => {
+		try {
+			TicketSchema.findOneAndUpdate(
+				{ _id, clientId },
+				{
+					status: 'En Cours',
+				},
+				{ new: true },
+			)
+				.then((data) => resolve(data))
+				.catch((error) => reject(error))
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
 // fermeture d'un ticket
 const ticketClosing = ({ _id, clientId }) => {
 	return new Promise((resolve, reject) => {
@@ -130,9 +161,11 @@ module.exports = {
 	insertTicket,
 	// insertPictureTicket,
 	getTickets,
+	getAllTickets,
 	getOneTicket,
 	updateMessageTicket,
 	updateStatusTicket,
+	ticketInProgress,
 	ticketClosing,
 	deleteTicket,
 }
