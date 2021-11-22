@@ -138,7 +138,6 @@ router.post('/login', loginCheck, async (req, res) => {
 	}
 
 	const user = await getUserByEmail(email)
-	console.log(user)
 
 	if (!user?.isVerified) {
 		return res.json({
