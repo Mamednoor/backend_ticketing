@@ -115,6 +115,7 @@ const verifyAccount = (_id, email) => {
 		}
 	})
 }
+
 module.exports = {
 	insertUser,
 	getUserById,

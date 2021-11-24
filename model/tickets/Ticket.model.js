@@ -28,31 +28,6 @@ const insertTicket = (ticketObjt) => {
 // 	})
 // }
 
-const getAllTickets = () => {
-	return new Promise((resolve, reject) => {
-		try {
-			TicketSchema.find()
-				.then((data) => resolve(data))
-				.catch((error) => reject(error))
-		} catch (error) {
-			reject(error)
-		}
-	})
-}
-
-// récupération des tickets d'un utilisateur en fonction de son ID
-const getDetailTicket = (_id) => {
-	return new Promise((resolve, reject) => {
-		try {
-			TicketSchema.find({ _id })
-				.then((data) => resolve(data))
-				.catch((error) => reject(error))
-		} catch (error) {
-			reject(error)
-		}
-	})
-}
-
 // récupération des tickets d'un utilisateur en fonction de son ID
 const getTickets = (clientId) => {
 	return new Promise((resolve, reject) => {
@@ -100,14 +75,42 @@ const updateMessageTicket = ({ _id, clientId, sender, message }) => {
 	})
 }
 
-// mise a jour du status d'un ticket
-const updateStatusTicket = ({ _id, clientId, status }) => {
+//////////////// ADMIN /////////////////
+
+const getAllTickets = () => {
+	return new Promise((resolve, reject) => {
+		try {
+			TicketSchema.find()
+				.then((data) => resolve(data))
+				.catch((error) => reject(error))
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
+// récupération des tickets d'un utilisateur en fonction de son ID
+const getDetailTicket = (_id) => {
+	return new Promise((resolve, reject) => {
+		try {
+			TicketSchema.find({ _id })
+				.then((data) => resolve(data))
+				.catch((error) => reject(error))
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
+const ReplyMessageTicket = ({ _id, isAdmin, sender, message }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndUpdate(
-				{ _id, clientId },
+				{ _id },
 				{
-					status,
+					$push: {
+						conversations: { sender, message },
+					},
 				},
 				{ new: true },
 			)
@@ -170,15 +173,17 @@ const deleteTicket = ({ _id, isAdmin }) => {
 	})
 }
 
+//////////////// ADMIN /////////////////
+
 module.exports = {
 	insertTicket,
 	// insertPictureTicket,
 	getTickets,
 	getAllTickets,
+	ReplyMessageTicket,
 	getDetailTicket,
 	getOneTicket,
 	updateMessageTicket,
-	updateStatusTicket,
 	ticketInProgress,
 	ticketClosing,
 	deleteTicket,

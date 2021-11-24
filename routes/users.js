@@ -254,4 +254,7 @@ router.patch('/reset-password', updatePwdMailCheck, async (req, res) => {
 	})
 })
 
+////////////////// ADMIN //////////////////
+
+////////////////// ADMIN //////////////////
 module.exports = router

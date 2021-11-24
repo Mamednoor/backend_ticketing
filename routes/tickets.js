@@ -6,10 +6,10 @@ const {
 	insertPictureTicket,
 	getAllTickets,
 	getDetailTicket,
+	ReplyMessageTicket,
 	getTickets,
 	getOneTicket,
 	updateMessageTicket,
-	updateStatusTicket,
 	ticketClosing,
 	ticketInProgress,
 	deleteTicket,
@@ -27,6 +27,8 @@ router.all('/', (req, res, next) => {
 	next()
 })
 
+////////////////// ADMIN //////////////////
+
 // recuperer tout les tickets d'un utilisateur
 router.get('/', checkToken, async (req, res) => {
 	try {
@@ -43,7 +45,7 @@ router.get('/', checkToken, async (req, res) => {
 	}
 })
 
-// recuperer tout les tickets
+// recuperer tout les tickets admin
 router.get('/all', checkToken, async (req, res) => {
 	try {
 		//const clientId = req.userId
@@ -59,6 +61,7 @@ router.get('/all', checkToken, async (req, res) => {
 	}
 })
 
+// recuperer details d'un ticket admin
 router.get('/all/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
@@ -73,6 +76,39 @@ router.get('/all/:_id', checkToken, async (req, res) => {
 		res.json({ message: error.message })
 	}
 })
+
+// mise à jour du ticket
+router.put('/all/:_id', checkToken, replyTicketCheck, async (req, res) => {
+	try {
+		const { sender, message } = req.body
+		// query selector de l'id du ticket
+		const { _id } = req.params
+		const isAdmin = req.isAdmin
+
+		const result = await ReplyMessageTicket({
+			isAdmin,
+			_id,
+			sender,
+			message,
+		})
+
+		if (result?._id && result?.isAdmin == true) {
+			return res.json({
+				status: 'success',
+				message: 'votre réponse a bien été envoyée',
+				result,
+			})
+		}
+
+		res.json({
+			message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
+		})
+	} catch (error) {
+		res.json({ message: error.message })
+	}
+})
+
+////////////////// ADMIN //////////////////
 
 // recuperer un ticket en fonction de son id
 router.get('/:_id', checkToken, async (req, res) => {
@@ -154,31 +190,6 @@ router.put('/:_id', checkToken, replyTicketCheck, async (req, res) => {
 			return res.json({
 				status: 'success',
 				message: 'votre réponse a bien été envoyée',
-				result,
-			})
-		}
-
-		res.json({
-			message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
-		})
-	} catch (error) {
-		res.json({ message: error.message })
-	}
-})
-
-// mise à jour du status
-router.patch('/:_id', checkToken, statutCheck, async (req, res) => {
-	try {
-		// query selector de l'id du ticket
-		const { status } = req.body
-		const { _id } = req.params
-		const clientId = req.userId
-		const result = await updateStatusTicket({ _id, clientId, status })
-
-		if (result?._id) {
-			return res.json({
-				status: 'success',
-				message: 'Statut du ticket mis à jour',
 				result,
 			})
 		}
