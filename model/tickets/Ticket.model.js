@@ -41,6 +41,19 @@ const getAllTickets = () => {
 }
 
 // récupération des tickets d'un utilisateur en fonction de son ID
+const getDetailTicket = (_id) => {
+	return new Promise((resolve, reject) => {
+		try {
+			TicketSchema.find({ _id })
+				.then((data) => resolve(data))
+				.catch((error) => reject(error))
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
+// récupération des tickets d'un utilisateur en fonction de son ID
 const getTickets = (clientId) => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -107,11 +120,11 @@ const updateStatusTicket = ({ _id, clientId, status }) => {
 }
 
 // prise en compte d'un ticket
-const ticketInProgress = ({ _id, clientId }) => {
+const ticketInProgress = ({ _id, isAdmin }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndUpdate(
-				{ _id, clientId },
+				{ _id },
 				{
 					status: 'En Cours',
 				},
@@ -126,11 +139,11 @@ const ticketInProgress = ({ _id, clientId }) => {
 }
 
 // fermeture d'un ticket
-const ticketClosing = ({ _id, clientId }) => {
+const ticketClosing = ({ _id, isAdmin }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndUpdate(
-				{ _id, clientId },
+				{ _id },
 				{
 					status: 'Fermé',
 				},
@@ -145,10 +158,10 @@ const ticketClosing = ({ _id, clientId }) => {
 }
 
 // suppression d'un ticket
-const deleteTicket = ({ _id, clientId }) => {
+const deleteTicket = ({ _id, isAdmin }) => {
 	return new Promise((resolve, reject) => {
 		try {
-			TicketSchema.findOneAndDelete({ _id, clientId })
+			TicketSchema.findOneAndDelete({ _id })
 				.then((data) => resolve(data))
 				.catch((error) => reject(error))
 		} catch (error) {
@@ -162,6 +175,7 @@ module.exports = {
 	// insertPictureTicket,
 	getTickets,
 	getAllTickets,
+	getDetailTicket,
 	getOneTicket,
 	updateMessageTicket,
 	updateStatusTicket,

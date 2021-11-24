@@ -110,9 +110,11 @@ router.patch('/validation', async (req, res) => {
 // profil utilisateur
 router.get('/profil', checkToken, async (req, res) => {
 	const _id = req.userId
+
 	const userProfil = await getUserById(_id)
 
-	const { firstname, lastname, company, address, phone, email } = userProfil
+	const { firstname, lastname, company, address, phone, email, isAdmin } =
+		userProfil
 	res.json({
 		user: {
 			_id,
@@ -122,6 +124,7 @@ router.get('/profil', checkToken, async (req, res) => {
 			address,
 			phone,
 			email,
+			isAdmin,
 		},
 	})
 })

@@ -5,6 +5,7 @@ const {
 	insertTicket,
 	insertPictureTicket,
 	getAllTickets,
+	getDetailTicket,
 	getTickets,
 	getOneTicket,
 	updateMessageTicket,
@@ -48,6 +49,21 @@ router.get('/all', checkToken, async (req, res) => {
 		//const clientId = req.userId
 		// récupére tout les tickets d'un utilisateur en fonction de son ID
 		const result = await getAllTickets()
+
+		return res.json({
+			status: 'success',
+			result,
+		})
+	} catch (error) {
+		res.json({ message: error.message })
+	}
+})
+
+router.get('/all/:_id', checkToken, async (req, res) => {
+	try {
+		// query selector de l'id du ticket
+		const { _id } = req.params
+		const result = await getDetailTicket(_id)
 
 		return res.json({
 			status: 'success',
@@ -181,9 +197,10 @@ router.patch('/close-ticket/:_id', checkToken, async (req, res) => {
 		// query selector de l'id du ticket
 		const { _id } = req.params
 		const clientId = req.userId
-		const result = await ticketClosing({ _id, clientId })
+		const isAdmin = req.isAdmin
+		const result = await ticketClosing({ _id, clientId, isAdmin })
 
-		if (result?._id) {
+		if (result?._id && result?.isAdmin === true) {
 			return res.json({
 				status: 'success',
 				message: 'Le ticket a été fermé',
@@ -204,10 +221,10 @@ router.patch('/inprogress-ticket/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
 		const { _id } = req.params
-		const clientId = req.userId
-		const result = await ticketInProgress({ _id, clientId })
+		const isAdmin = req.isAdmin
+		const result = await ticketInProgress({ _id, isAdmin })
 
-		if (result?._id) {
+		if (result?._id && result?.isAdmin === true) {
 			return res.json({
 				status: 'success',
 				message: 'Le ticket est pris en compte',
@@ -228,17 +245,21 @@ router.delete('/delete/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
 		const { _id } = req.params
-		const clientId = req.userId
-		const result = await deleteTicket({ _id, clientId })
+		const isAdmin = req?.isAdmin
+		const result = await deleteTicket({ _id, isAdmin })
 
 		if (result?._id == null) {
 			res.json({
 				message: "l'opération a échouée, le ticket n'existe pas",
 			})
 		}
-		return res.json({
-			message: 'Votre ticket a bien été supprimée',
-		})
+		if (result?._id && result?.isAdmin === true) {
+			return res.json({
+				status: 'success',
+				message: 'Le ticket est pris en compte',
+				result,
+			})
+		}
 	} catch (error) {
 		res.json({ message: " l'opération a échouée : " + error.message })
 	}
