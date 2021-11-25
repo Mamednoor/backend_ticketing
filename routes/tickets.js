@@ -83,16 +83,14 @@ router.put('/all/:_id', checkToken, replyTicketCheck, async (req, res) => {
 		const { sender, message } = req.body
 		// query selector de l'id du ticket
 		const { _id } = req.params
-		const isAdmin = req.isAdmin
 
 		const result = await ReplyMessageTicket({
-			isAdmin,
 			_id,
 			sender,
 			message,
 		})
 
-		if (result?._id && result?.isAdmin == true) {
+		if (result?._id) {
 			return res.json({
 				status: 'success',
 				message: 'votre réponse a bien été envoyée',

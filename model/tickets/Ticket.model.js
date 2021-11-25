@@ -102,7 +102,7 @@ const getDetailTicket = (_id) => {
 	})
 }
 
-const ReplyMessageTicket = ({ _id, isAdmin, sender, message }) => {
+const ReplyMessageTicket = ({ _id, sender, message }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndUpdate(
@@ -123,7 +123,7 @@ const ReplyMessageTicket = ({ _id, isAdmin, sender, message }) => {
 }
 
 // prise en compte d'un ticket
-const ticketInProgress = ({ _id, isAdmin }) => {
+const ticketInProgress = ({ _id }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndUpdate(
@@ -142,7 +142,7 @@ const ticketInProgress = ({ _id, isAdmin }) => {
 }
 
 // fermeture d'un ticket
-const ticketClosing = ({ _id, isAdmin }) => {
+const ticketClosing = ({ _id }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndUpdate(
@@ -161,7 +161,7 @@ const ticketClosing = ({ _id, isAdmin }) => {
 }
 
 // suppression d'un ticket
-const deleteTicket = ({ _id, isAdmin }) => {
+const deleteTicket = ({ _id }) => {
 	return new Promise((resolve, reject) => {
 		try {
 			TicketSchema.findOneAndDelete({ _id })
