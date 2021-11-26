@@ -8,6 +8,8 @@ const {
 	storeUserRefreshToken,
 	updatePassword,
 	verifyAccount,
+	getAllUsers,
+	getUserInfo,
 } = require('../model/users/User.model')
 
 const { hashPassword, comparePassword } = require('../services/bcrypt')
@@ -79,6 +81,39 @@ router.post('/', createUserCheck, async (req, res) => {
 		})
 	}
 })
+
+////////////////// ADMIN //////////////////
+
+// recuperer tout les utilisateurs
+router.get('/all', checkToken, async (req, res) => {
+	try {
+		const result = await getAllUsers()
+		console.log(' user info : ', result)
+		return res.json({
+			status: 'success',
+			result,
+		})
+	} catch (error) {
+		res.json({ message: error.message })
+	}
+})
+
+// recuperer un utilisateur
+router.get('/all/:_id', checkToken, async (req, res) => {
+	try {
+		const { _id } = req.params
+		const result = await getUserInfo(_id)
+
+		return res.json({
+			status: 'success',
+			result,
+		})
+	} catch (error) {
+		res.json({ message: error.message })
+	}
+})
+
+////////////////// ADMIN //////////////////
 
 // vérification / activation du compte
 router.patch('/validation', async (req, res) => {
@@ -254,7 +289,4 @@ router.patch('/reset-password', updatePwdMailCheck, async (req, res) => {
 	})
 })
 
-////////////////// ADMIN //////////////////
-
-////////////////// ADMIN //////////////////
 module.exports = router

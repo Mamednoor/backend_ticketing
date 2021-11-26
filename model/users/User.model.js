@@ -116,6 +116,35 @@ const verifyAccount = (_id, email) => {
 	})
 }
 
+const getAllUsers = () => {
+	return new Promise((resolve, reject) => {
+		try {
+			UserSchema.find()
+				.select('-password')
+				.select('-refreshToken')
+				.then((data) => resolve(data))
+				.catch((error) => reject(error))
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
+// récupération des tickets d'un utilisateur en fonction de son ID
+const getUserInfo = (_id) => {
+	return new Promise((resolve, reject) => {
+		try {
+			UserSchema.find({ _id })
+				.select('-password')
+				.select('-refreshToken')
+				.then((data) => resolve(data))
+				.catch((error) => reject(error))
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
 module.exports = {
 	insertUser,
 	getUserById,
@@ -123,4 +152,6 @@ module.exports = {
 	storeUserRefreshToken,
 	updatePassword,
 	verifyAccount,
+	getAllUsers,
+	getUserInfo,
 }

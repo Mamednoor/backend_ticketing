@@ -27,8 +27,6 @@ router.all('/', (req, res, next) => {
 	next()
 })
 
-////////////////// ADMIN //////////////////
-
 // recuperer tout les tickets d'un utilisateur
 router.get('/', checkToken, async (req, res) => {
 	try {
@@ -44,6 +42,8 @@ router.get('/', checkToken, async (req, res) => {
 		res.json({ message: error.message })
 	}
 })
+
+////////////////// ADMIN //////////////////
 
 // recuperer tout les tickets admin
 router.get('/all', checkToken, async (req, res) => {
