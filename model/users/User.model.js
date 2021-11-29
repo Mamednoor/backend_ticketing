@@ -127,13 +127,24 @@ const getAllUsers = () => {
 	})
 }
 
-// récupération des tickets d'un utilisateur en fonction de son ID
 const getUserInfo = (_id) => {
 	return new Promise((resolve, reject) => {
 		try {
 			UserSchema.find({ _id })
 				.select('-password')
 				.select('-refreshToken')
+				.then((data) => resolve(data))
+				.catch((error) => reject(error))
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
+const deleteUser = ({ _id }) => {
+	return new Promise((resolve, reject) => {
+		try {
+			UserSchema.findOneAndDelete({ _id })
 				.then((data) => resolve(data))
 				.catch((error) => reject(error))
 		} catch (error) {
@@ -151,4 +162,5 @@ module.exports = {
 	verifyAccount,
 	getAllUsers,
 	getUserInfo,
+	deleteUser,
 }

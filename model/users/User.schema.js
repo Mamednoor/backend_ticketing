@@ -71,6 +71,11 @@ const UserSchema = new Schema({
 		required: true,
 		default: false,
 	},
+	createdOn: {
+		type: Date,
+		required: true,
+		default: Date.now(),
+	},
 })
 
 module.exports = {

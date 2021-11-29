@@ -1,8 +1,8 @@
 const Joi = require('joi')
 
 // les diffférents schéma à valider
-const firstname = Joi.string().alphanum().min(5).max(30).required()
-const lastname = Joi.string().alphanum().min(2).max(30).required()
+const firstname = Joi.string().min(4).max(30).required()
+const lastname = Joi.string().min(2).max(30).required()
 const company = Joi.string().min(3).max(50).required()
 const address = Joi.string().max(150).required()
 // validation du numéro de téléphone, téléphone colonne String,

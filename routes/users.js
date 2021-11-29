@@ -10,6 +10,7 @@ const {
 	verifyAccount,
 	getAllUsers,
 	getUserInfo,
+	deleteUser,
 } = require('../model/users/User.model')
 
 const { hashPassword, comparePassword } = require('../services/bcrypt')
@@ -109,6 +110,31 @@ router.get('/all/:_id', checkToken, async (req, res) => {
 		})
 	} catch (error) {
 		res.json({ message: error.message })
+	}
+})
+
+// suppression d'un utilisateur
+router.delete('/delete/:_id', checkToken, async (req, res) => {
+	try {
+		// query selector de l'id du ticket
+		const { _id } = req.params
+		const isAdmin = req?.isAdmin
+		const result = await deleteUser({ _id, isAdmin })
+
+		if (result?._id == null) {
+			res.json({
+				message: "l'opération a échouée, l'utilisateur n'existe pas",
+			})
+		}
+		if (result?._id && result?.isAdmin === true) {
+			return res.json({
+				status: 'success',
+				message: "L'utilisateur à été supprimé, cette action est irréversible",
+				result,
+			})
+		}
+	} catch (error) {
+		res.json({ message: " l'opération a échouée : " + error.message })
 	}
 })
 

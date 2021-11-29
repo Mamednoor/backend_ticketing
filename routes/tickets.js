@@ -265,7 +265,7 @@ router.delete('/delete/:_id', checkToken, async (req, res) => {
 		if (result?._id && result?.isAdmin === true) {
 			return res.json({
 				status: 'success',
-				message: 'Le ticket est pris en compte',
+				message: 'Le ticket à été supprimé, cette action est irréversible ',
 				result,
 			})
 		}
