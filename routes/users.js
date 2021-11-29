@@ -88,7 +88,6 @@ router.post('/', createUserCheck, async (req, res) => {
 router.get('/all', checkToken, async (req, res) => {
 	try {
 		const result = await getAllUsers()
-		console.log(' user info : ', result)
 		return res.json({
 			status: 'success',
 			result,
@@ -134,7 +133,6 @@ router.patch('/validation', async (req, res) => {
 			message: 'Une erreur est survenue, veuillez essayer ultérieurement',
 		})
 	} catch (error) {
-		console.log(error)
 		return res.json({
 			status: 'error',
 			message: error.message,

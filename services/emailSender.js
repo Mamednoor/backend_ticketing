@@ -19,7 +19,6 @@ const send = (mailler) => {
 
 			resolve(result)
 		} catch (error) {
-			console.log(error)
 			reject(error)
 		}
 	})

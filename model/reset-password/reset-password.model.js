@@ -23,13 +23,11 @@ const ResetPwdByMail = (email, resetCode) => {
 			// recherche si les valeurs email et resetCode existe en BDD
 			ResetPasswordSchema.findOne({ email, resetCode }, (error, data) => {
 				if (error) {
-					console.log(error)
 					resolve(false)
 				}
 				resolve(data)
 			})
 		} catch (error) {
-			console.log(error)
 			reject(error)
 		}
 	})

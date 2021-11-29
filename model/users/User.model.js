@@ -105,13 +105,10 @@ const verifyAccount = (_id, email) => {
 			)
 				.then((data) => resolve(data))
 				.catch((error) => {
-					console.log(error.message)
-
 					reject(error)
 				})
 		} catch (error) {
-			console.log(error.message)
-			reject(error)
+			reject(error.message)
 		}
 	})
 }

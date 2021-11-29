@@ -1,7 +1,6 @@
 const handleError = (error, res) => {
-  console.log(error);
+	console.log(error)
+	res.status(error.status || 500).json({ message: error.message })
+}
 
-  res.status(error.status || 500).json({ message: error.message });
-};
-
-module.exports = handleError;
+module.exports = handleError
