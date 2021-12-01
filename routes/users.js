@@ -85,6 +85,57 @@ router.post('/', createUserCheck, async (req, res) => {
 
 ////////////////// ADMIN //////////////////
 
+router.post('/create-user', createUserCheck, async (req, res) => {
+	const {
+		firstname,
+		lastname,
+		company,
+		address,
+		phone,
+		email,
+		password,
+		isAdmin,
+	} = req.body
+	try {
+		// hash password with bcrypt
+		const hashedPwd = await hashPassword(password)
+
+		const newUser = {
+			firstname,
+			lastname,
+			company,
+			address,
+			phone,
+			email,
+			isAdmin,
+			password: hashedPwd,
+		}
+
+		const result = await insertUser(newUser)
+
+		await mailProcessor({
+			email,
+			type: 'User-Confirmation',
+			activationLink: URL + 'validation/' + result?._id + '/' + email,
+		})
+		res.json({
+			status: 'success',
+			message: 'Un nouvelle utilisateur a été crée',
+			result,
+		})
+	} catch (error) {
+		let message =
+			'Une erreur est survenue, nous ne pouvons répondre à votre requête, veuillez réessayer ultérieurement'
+		if (error.message.includes('duplicate key error collection')) {
+			message = "L'adresse mail est déjà utilisée"
+		}
+		res.json({
+			status: 'error',
+			message: "erreur lors de la création de l'utilisateur",
+		})
+	}
+})
+
 // recuperer tout les utilisateurs
 router.get('/all', checkToken, async (req, res) => {
 	try {

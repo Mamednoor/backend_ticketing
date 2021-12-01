@@ -5,6 +5,7 @@ const firstname = Joi.string().min(4).max(30).required()
 const lastname = Joi.string().min(2).max(30).required()
 const company = Joi.string().min(3).max(50).required()
 const address = Joi.string().max(150).required()
+const isAdmin = Joi.boolean()
 // validation du numéro de téléphone, téléphone colonne String,
 // min et max length à 10 regex pour le numéro de téléphone en francais
 const phone = Joi.string()
@@ -32,6 +33,7 @@ const createUserCheck = (req, res, next) => {
 		email,
 		phone,
 		password,
+		isAdmin,
 	})
 
 	const value = schema.validate(req.body)
