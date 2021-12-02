@@ -115,7 +115,7 @@ router.post('/create-user', createUserCheck, async (req, res) => {
 
 		await mailProcessor({
 			email,
-			type: 'User-Confirmation',
+			type: 'User-Created',
 			activationLink: URL + 'validation/' + result?._id + '/' + email,
 		})
 		res.json({

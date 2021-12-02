@@ -79,6 +79,20 @@ const mailProcessor = ({
 			}
 			send(mailler)
 			break
+		case 'User-Created':
+			mailler = {
+				from: '"MNG Company" <compteservicecda@gmail.com>', // sender address
+				to: email, // list of receivers
+				subject: 'Nous avons crée votre compte', // Subject line
+				text: 'Merci de suivre le lien suivant pour la validation de votre compte, Afin de pouvoir vous connecter, merci de réinitialiser votre mot de passe', // plain text body
+				html: `<p>Bonjour,</p>
+								Merci de suivre le lien suivant pour la validation de votre compte 
+							<p>${activationLink}</p>
+							<p>Nous vous prions de bien vouloir suivre la procédure de ré-initialisation de mot de passe afin de vous connecter</p>
+							<p>Cordialement.</p>`, // html body
+			}
+			send(mailler)
+			break
 		default:
 			break
 	}
