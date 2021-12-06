@@ -7,6 +7,7 @@ const {
 	getUserByEmail,
 	storeUserRefreshToken,
 	updatePassword,
+	updateProfil,
 	verifyAccount,
 	getAllUsers,
 	getUserInfo,
@@ -237,6 +238,49 @@ router.get('/profil', checkToken, async (req, res) => {
 			isAdmin,
 		},
 	})
+})
+
+router.patch('/profil/:_id', checkToken, async (req, res) => {
+	const {
+		newFirstname,
+		newLastname,
+		newCompany,
+		newAddress,
+		newPhone,
+		newEmail,
+	} = req.body
+
+	try {
+		const _id = req.userId
+		const userProfil = await getUserById(_id)
+
+		const updateProfileUser = {
+			newFirstname,
+			newLastname,
+			newCompany,
+			newAddress,
+			newPhone,
+			newEmail,
+		}
+
+		const result = await updateProfil(_id, updateProfileUser)
+
+		if (result?._id == null) {
+			res.json({
+				message: "l'opération a échouée, l'utilisateur n'existe pas",
+			})
+		}
+
+		if (result?._id) {
+			return res.json({
+				status: 'success',
+				message: 'Votre profil a été mise à jour',
+				result,
+			})
+		}
+	} catch (error) {
+		res.json({ message: " l'opération a échouée : " + error.message })
+	}
 })
 
 // connexion d'un utilisateur

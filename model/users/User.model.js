@@ -90,6 +90,34 @@ const updatePassword = (email, newPassword) => {
 	})
 }
 
+const updateProfil = (_id, updateProfileUser) => {
+	return new Promise((resolve, reject) => {
+		try {
+			UserSchema.findOneAndUpdate(
+				// filtre sur l'id
+				{ _id },
+				// la donnée à mettre à jour
+				{
+					firstname: updateProfileUser.newFirstname,
+					lastname: updateProfileUser.newLastname,
+					company: updateProfileUser.newCompany,
+					address: updateProfileUser.newAddress,
+					phone: updateProfileUser.newPhone,
+					email: updateProfileUser.newEmail,
+				},
+				// retour du dernier update de donnée
+				{ new: true },
+			)
+				.then((data) => resolve(data))
+				.catch((error) => {
+					reject(error)
+				})
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
 const verifyAccount = (_id, email) => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -159,6 +187,7 @@ module.exports = {
 	getUserByEmail,
 	storeUserRefreshToken,
 	updatePassword,
+	updateProfil,
 	verifyAccount,
 	getAllUsers,
 	getUserInfo,
