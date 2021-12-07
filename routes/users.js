@@ -8,6 +8,7 @@ const {
 	storeUserRefreshToken,
 	updatePassword,
 	updateProfil,
+	updateUser,
 	verifyAccount,
 	getAllUsers,
 	getUserInfo,
@@ -182,6 +183,51 @@ router.delete('/delete/:_id', checkToken, async (req, res) => {
 			return res.json({
 				status: 'success',
 				message: "L'utilisateur à été supprimé, cette action est irréversible",
+				result,
+			})
+		}
+	} catch (error) {
+		res.json({ message: " l'opération a échouée : " + error.message })
+	}
+})
+
+router.patch('/update-user/:_id', checkToken, async (req, res) => {
+	const {
+		newFirstname,
+		newLastname,
+		newCompany,
+		newAddress,
+		newPhone,
+		newEmail,
+		newisAdmin,
+		newisVerified,
+	} = req.body
+
+	try {
+		const _id = req.params
+		const userProfil = await getUserById(_id)
+		const updateUserProfile = {
+			newFirstname,
+			newLastname,
+			newCompany,
+			newAddress,
+			newPhone,
+			newEmail,
+			newisAdmin,
+			newisVerified,
+		}
+
+		const result = await updateUser(_id, updateUserProfile)
+		if (result?._id == null) {
+			res.json({
+				message: "l'opération a échouée, l'utilisateur n'existe pas",
+			})
+		}
+
+		if (result?._id) {
+			return res.json({
+				status: 'success',
+				message: 'Votre profil a été mise à jour',
 				result,
 			})
 		}

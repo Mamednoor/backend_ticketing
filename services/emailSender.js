@@ -88,7 +88,7 @@ const mailProcessor = ({
 				html: `<p>Bonjour,</p>
 								Merci de suivre le lien suivant pour la validation de votre compte 
 							<p>${activationLink}</p>
-							<p>Nous vous prions de bien vouloir suivre la procédure de ré-initialisation de mot de passe afin de vous connecter</p>
+							<p>Nous vous prions de définir votre mot de passe avec la procédure de ré-initialisation</p>
 							<p>Cordialement.</p>`, // html body
 			}
 			send(mailler)
