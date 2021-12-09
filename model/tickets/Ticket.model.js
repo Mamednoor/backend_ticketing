@@ -14,20 +14,6 @@ const insertTicket = (ticketObjt) => {
 	})
 }
 
-// enregistrement d'un ticket avec image
-// const insertPictureTicket = (pictureData) => {
-// 	return new Promise((resolve, reject) => {
-// 		try {
-// 			TicketSchema(pictureData)
-// 				.save()
-// 				.then((data) => resolve(data))
-// 				.catch((error) => reject(error))
-// 		} catch (error) {
-// 			reject(error)
-// 		}
-// 	})
-// }
-
 // récupération des tickets d'un utilisateur en fonction de son ID
 const getTickets = (clientId) => {
 	return new Promise((resolve, reject) => {
@@ -177,7 +163,6 @@ const deleteTicket = ({ _id }) => {
 
 module.exports = {
 	insertTicket,
-	// insertPictureTicket,
 	getTickets,
 	getAllTickets,
 	ReplyMessageTicket,

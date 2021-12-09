@@ -20,7 +20,6 @@ const {
 	statutCheck,
 	replyTicketCheck,
 } = require('../utils/formValidation')
-// const { upload } = require('../utils/upload')
 
 router.all('/', (req, res, next) => {
 	// res.json({ message: " get tickets route" });
@@ -126,48 +125,42 @@ router.get('/:_id', checkToken, async (req, res) => {
 })
 
 // création d'un ticket
-router.post(
-	'/add-ticket',
-	checkToken,
-	createTicketCheck,
-	//upload.single('picture'),
-	async (req, res) => {
-		try {
-			const clientId = req.userId
-			const { subject, sender, message } = req.body
-			//const picture = req.file.filename
+router.post('/add-ticket', checkToken, createTicketCheck, async (req, res) => {
+	try {
+		const clientId = req.userId
+		const { subject, sender, message, priority } = req.body
 
-			const ticketObjt = {
-				clientId: clientId,
-				subject,
-				conversations: [
-					{
-						sender,
-						message,
-					},
-				],
-			}
-
-			const result = await insertTicket(ticketObjt)
-
-			if (result?._id) {
-				return res.json({
-					status: 'success',
-					message: 'Un nouveau ticket a été crée',
-					result,
-				})
-			}
-
-			res.json({
-				status: 'error',
-				message: 'erreur lors de la création du ticket',
-			})
-			res.json({ status: 'error', message: error.message })
-		} catch (error) {
-			res.json({ status: 'error', message: error.message })
+		const ticketObjt = {
+			clientId: clientId,
+			subject,
+			priority,
+			conversations: [
+				{
+					sender,
+					message,
+				},
+			],
 		}
-	},
-)
+
+		const result = await insertTicket(ticketObjt)
+
+		if (result?._id) {
+			return res.json({
+				status: 'success',
+				message: 'Un nouveau ticket a été crée',
+				result,
+			})
+		}
+
+		res.json({
+			status: 'error',
+			message: 'erreur lors de la création du ticket',
+		})
+		res.json({ status: 'error', message: error.message })
+	} catch (error) {
+		res.json({ status: 'error', message: error.message })
+	}
+})
 
 // mise à jour du ticket
 router.put('/:_id', checkToken, replyTicketCheck, async (req, res) => {

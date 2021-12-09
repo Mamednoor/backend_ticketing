@@ -82,6 +82,8 @@ const createTicketCheck = (req, res, next) => {
 		subject: Joi.string().min(10).max(100).required(),
 		sender: Joi.string().min(5).max(30).required(),
 		message: Joi.string().min(10).max(500).required(),
+		status: Joi.string().valid('En Attente', 'En Cours', 'Fermé'),
+		priority: Joi.string().valid('Normal', 'Basse', 'Haute'),
 	})
 
 	const values = schema.validate(req.body)
@@ -118,6 +120,19 @@ const statutCheck = (req, res, next) => {
 	next()
 }
 
+const priorityCheck = (req, res, next) => {
+	const schema = Joi.object().keys({
+		priority: Joi.string().valid('Normal', 'Basse', 'Haute'),
+	})
+
+	const value = schema.validate(req.body)
+
+	if (value.error) {
+		return res.json({ status: 'error', message: value.error.message })
+	}
+	next()
+}
+
 module.exports = {
 	createUserCheck,
 	replyTicketCheck,
@@ -126,4 +141,5 @@ module.exports = {
 	updatePwdMailCheck,
 	createTicketCheck,
 	statutCheck,
+	priorityCheck,
 }

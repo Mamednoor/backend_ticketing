@@ -21,9 +21,15 @@ const TicketSchema = new Schema({
 	},
 	status: {
 		type: String,
-		maxlength: 30,
+		maxlength: 10,
 		required: true,
 		default: 'En Attente',
+	},
+	priority: {
+		type: String,
+		maxlength: 6,
+		required: true,
+		default: 'Normal',
 	},
 	conversations: [
 		{
@@ -49,9 +55,6 @@ const TicketSchema = new Schema({
 				required: true,
 				default: Date.now(),
 			},
-			// picture: {
-			// 	type: String,
-			// },
 		},
 	],
 })
