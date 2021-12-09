@@ -19,9 +19,17 @@ const email = Joi.string().email({
 	tlds: { allow: ['com', 'net', 'fr', 'org', 'io'] },
 })
 
-const password = Joi.string().min(8).max(30).required()
+const password = Joi.string()
+	.min(8)
+	.max(150)
+	.required()
+	.regex(/^(?=.*[A-Za-z])(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
 const resetCode = Joi.string().min(15).max(15).required()
-const newPassword = Joi.string().min(8).max(30).required()
+const newPassword = Joi.string()
+	.min(8)
+	.max(150)
+	.required()
+	.regex(/^(?=.*[A-Za-z])(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
 
 // fonction de validation
 const createUserCheck = (req, res, next) => {

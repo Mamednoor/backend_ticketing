@@ -28,6 +28,9 @@ const mailProcessor = ({
 	email,
 	code,
 	type,
+	firstname = '',
+	lastname = '',
+	password = '',
 	activationLink = '',
 	resetPasswordLink = '',
 }) => {
@@ -85,10 +88,11 @@ const mailProcessor = ({
 				to: email, // list of receivers
 				subject: 'Nous avons crée votre compte', // Subject line
 				text: 'Merci de suivre le lien suivant pour la validation de votre compte, Afin de pouvoir vous connecter, merci de réinitialiser votre mot de passe', // plain text body
-				html: `<p>Bonjour,</p>
+				html: `<p>Bonjour ${firstname} ${lastname},</p>
 								Merci de suivre le lien suivant pour la validation de votre compte 
 							<p>${activationLink}</p>
-							<p>Nous vous prions de définir votre mot de passe avec la procédure de ré-initialisation</p>
+							<p>Voici votre mot de passe provisoire <strong>${password}</strong></p>
+							<p>Nous vous prions de modifier votre mot de passe avec la procédure de ré-initialisation</p>
 							<p>Cordialement.</p>`, // html body
 			}
 			send(mailler)
