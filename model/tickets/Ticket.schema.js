@@ -36,7 +36,7 @@ const TicketSchema = new Schema({
 			sender: {
 				type: String,
 				minlength: 5,
-				maxlength: 30,
+				maxlength: 100,
 				trim: true,
 				required: true,
 				default: '',
@@ -48,7 +48,6 @@ const TicketSchema = new Schema({
 				trim: true,
 				required: true,
 				default: '',
-				trim: true,
 			},
 			msgAt: {
 				type: Date,

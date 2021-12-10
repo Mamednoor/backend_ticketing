@@ -135,8 +135,8 @@ const updatePwdMailCheck = (req, res, next) => {
 const createTicketCheck = (req, res, next) => {
 	const schema = Joi.object().keys({
 		subject: Joi.string().min(10).max(100).required(),
-		sender: Joi.string().min(5).max(30).required(),
 		message: Joi.string().min(10).max(500).required(),
+		sender: Joi.string().min(4).max(100).required(),
 		status: Joi.string().valid('En Attente', 'En Cours', 'Fermé'),
 		priority: Joi.string().valid('Normal', 'Basse', 'Haute'),
 	})
@@ -150,7 +150,7 @@ const createTicketCheck = (req, res, next) => {
 
 const replyTicketCheck = (req, res, next) => {
 	const schema = Joi.object().keys({
-		sender: Joi.string().min(5).max(30).required(),
+		sender: Joi.string().min(5).max(100).required(),
 		message: Joi.string().min(10).max(500).required(),
 	})
 
