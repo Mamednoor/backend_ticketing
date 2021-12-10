@@ -30,6 +30,8 @@ const {
 const { mailProcessor } = require('../services/emailSender')
 const {
 	createUserCheck,
+	profilCheck,
+	updateUserCheck,
 	loginCheck,
 	resetMailCheck,
 	updatePwdMailCheck,
@@ -194,22 +196,12 @@ router.delete('/delete/:_id', checkToken, async (req, res) => {
 	}
 })
 
-router.patch('/update-user/:_id', checkToken, async (req, res) => {
-	const {
-		newFirstname,
-		newLastname,
-		newCompany,
-		newAddress,
-		newPhone,
-		newEmail,
-		newisAdmin,
-		newisVerified,
-	} = req.body
-
-	try {
-		const _id = req.params
-		const userProfil = await getUserById(_id)
-		const updateUserProfile = {
+router.patch(
+	'/update-user/:_id',
+	checkToken,
+	updateUserCheck,
+	async (req, res) => {
+		const {
 			newFirstname,
 			newLastname,
 			newCompany,
@@ -218,26 +210,41 @@ router.patch('/update-user/:_id', checkToken, async (req, res) => {
 			newEmail,
 			newisAdmin,
 			newisVerified,
-		}
+		} = req.body
 
-		const result = await updateUser(_id, updateUserProfile)
-		if (result?._id == null) {
-			res.json({
-				message: "l'opération a échouée, l'utilisateur n'existe pas",
-			})
-		}
+		try {
+			const _id = req.params
+			const userProfil = await getUserById(_id)
+			const updateUserProfile = {
+				newFirstname,
+				newLastname,
+				newCompany,
+				newAddress,
+				newPhone,
+				newEmail,
+				newisAdmin,
+				newisVerified,
+			}
 
-		if (result?._id) {
-			return res.json({
-				status: 'success',
-				message: 'Votre profil a été mise à jour',
-				result,
-			})
+			const result = await updateUser(_id, updateUserProfile)
+			if (result?._id == null) {
+				res.json({
+					message: "l'opération a échouée, l'utilisateur n'existe pas",
+				})
+			}
+
+			if (result?._id) {
+				return res.json({
+					status: 'success',
+					message: 'Votre profil a été mise à jour',
+					result,
+				})
+			}
+		} catch (error) {
+			res.json({ message: " l'opération a échouée : " + error.message })
 		}
-	} catch (error) {
-		res.json({ message: " l'opération a échouée : " + error.message })
-	}
-})
+	},
+)
 
 ////////////////// ADMIN //////////////////
 
@@ -289,7 +296,7 @@ router.get('/profil', checkToken, async (req, res) => {
 	})
 })
 
-router.patch('/profil/:_id', checkToken, async (req, res) => {
+router.patch('/profil/:_id', checkToken, profilCheck, async (req, res) => {
 	const {
 		newFirstname,
 		newLastname,

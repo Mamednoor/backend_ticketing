@@ -1,11 +1,20 @@
 const Joi = require('joi')
 
 // les différents schéma à valider
-const firstname = Joi.string().min(4).max(30).required()
-const lastname = Joi.string().min(2).max(30).required()
+const firstname = Joi.string()
+	.min(4)
+	.max(30)
+	.required()
+	.regex(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
+const lastname = Joi.string()
+	.min(2)
+	.max(30)
+	.required()
+	.regex(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
 const company = Joi.string().min(3).max(50).required()
 const address = Joi.string().max(150).required()
 const isAdmin = Joi.boolean()
+const isVerified = Joi.boolean()
 // validation du numéro de téléphone, téléphone colonne String,
 // min et max length à 10 regex pour le numéro de téléphone en francais
 const phone = Joi.string()
@@ -42,6 +51,44 @@ const createUserCheck = (req, res, next) => {
 		phone,
 		password,
 		isAdmin,
+	})
+
+	const value = schema.validate(req.body)
+
+	if (value.error) {
+		return res.json({ status: 'error', message: value.error.message })
+	}
+	next()
+}
+
+const profilCheck = (req, res, next) => {
+	const schema = Joi.object({
+		newFirstname: firstname,
+		newLastname: lastname,
+		newCompany: company,
+		newAddress: address,
+		newPhone: phone,
+		newEmail: email,
+	})
+
+	const value = schema.validate(req.body)
+
+	if (value.error) {
+		return res.json({ status: 'error', message: value.error.message })
+	}
+	next()
+}
+
+const updateUserCheck = (req, res, next) => {
+	const schema = Joi.object({
+		newFirstname: firstname,
+		newLastname: lastname,
+		newCompany: company,
+		newAddress: address,
+		newPhone: phone,
+		newEmail: email,
+		newisAdmin: isAdmin,
+		newisVerified: isVerified,
 	})
 
 	const value = schema.validate(req.body)
@@ -143,6 +190,8 @@ const priorityCheck = (req, res, next) => {
 
 module.exports = {
 	createUserCheck,
+	profilCheck,
+	updateUserCheck,
 	replyTicketCheck,
 	loginCheck,
 	resetMailCheck,
