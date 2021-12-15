@@ -89,7 +89,11 @@ router.post('/', createUserCheck, async (req, res) => {
 
 ////////////////// ADMIN //////////////////
 
-router.post('/create-user', createUserCheck, async (req, res) => {
+router.post('/create-user', checkToken, createUserCheck, async (req, res) => {
+	const _id = req.userId
+	const userRole = await getUserById(_id)
+	console.log(userRole)
+
 	const {
 		firstname,
 		lastname,
@@ -100,6 +104,7 @@ router.post('/create-user', createUserCheck, async (req, res) => {
 		password,
 		isAdmin,
 	} = req.body
+
 	try {
 		// hash password with bcrypt
 		const hashedPwd = await hashPassword(password)
@@ -114,22 +119,27 @@ router.post('/create-user', createUserCheck, async (req, res) => {
 			isAdmin,
 			password: hashedPwd,
 		}
-
 		const result = await insertUser(newUser)
+		if (_id && userRole?.isAdmin === true) {
+			await mailProcessor({
+				email,
+				type: 'User-Created',
+				activationLink: URL + 'validation/' + result?._id + '/' + email,
+				firstname: result?.firstname,
+				lastname: result?.lastname,
+				password,
+			})
 
-		await mailProcessor({
-			email,
-			type: 'User-Created',
-			activationLink: URL + 'validation/' + result?._id + '/' + email,
-			firstname: result?.firstname,
-			lastname: result?.lastname,
-			password,
-		})
-		res.json({
-			status: 'success',
-			message: 'Un nouvelle utilisateur a été crée',
-			result,
-		})
+			res.json({
+				status: 'success',
+				message: 'Un nouvelle utilisateur a été crée',
+				result,
+			})
+		}
+		if (_id && userRole?.isAdmin === false)
+			return res.json({
+				message: 'Autorisation refusée',
+			})
 	} catch (error) {
 		let message =
 			'Une erreur est survenue, nous ne pouvons répondre à votre requête, veuillez réessayer ultérieurement'
@@ -144,47 +154,72 @@ router.post('/create-user', createUserCheck, async (req, res) => {
 })
 
 // recuperer tout les utilisateurs
-router.get('/all', checkToken, async (req, res) => {
+router.get('/user-list', checkToken, async (req, res) => {
+	const _id = req.userId
+	const userRole = await getUserById(_id)
+
 	try {
 		const result = await getAllUsers()
-		return res.json({
-			status: 'success',
-			result,
-		})
+		if (_id && userRole?.isAdmin === true)
+			return res.json({
+				status: 'success',
+				result,
+			})
+
+		if (_id && userRole?.isAdmin === false)
+			return res.json({
+				message: 'Autorisation refusée',
+			})
 	} catch (error) {
 		res.json({ message: error.message })
 	}
 })
 
 // recuperer un utilisateur
-router.get('/all/:_id', checkToken, async (req, res) => {
+router.get('/user-details/:_id', checkToken, async (req, res) => {
+	const Auth = req.userId
+	const userRole = await getUserById(Auth)
+
 	try {
 		const { _id } = req.params
 		const result = await getUserInfo(_id)
 
-		return res.json({
-			status: 'success',
-			result,
-		})
+		if (Auth && userRole?.isAdmin === true)
+			return res.json({
+				status: 'success',
+				result,
+			})
+		if (Auth && userRole?.isAdmin === false)
+			return res.json({
+				message: 'Autorisation refusée',
+			})
 	} catch (error) {
 		res.json({ message: error.message })
 	}
 })
 
 // suppression d'un utilisateur
-router.delete('/delete/:_id', checkToken, async (req, res) => {
+router.delete('/delete-user/:_id', checkToken, async (req, res) => {
+	const Auth = req.userId
+	const userRole = await getUserById(Auth)
+	console.log(userRole.isAdmin)
+
 	try {
 		// query selector de l'id du ticket
 		const { _id } = req.params
-		const isAdmin = req?.isAdmin
-		const result = await deleteUser({ _id, isAdmin })
+		let result = null
+
+		if (userRole?.isAdmin === true) {
+			let result = await deleteUser({ _id })
+		}
 
 		if (result?._id == null) {
 			res.json({
 				message: "l'opération a échouée, l'utilisateur n'existe pas",
 			})
 		}
-		if (result?._id && result?.isAdmin === true) {
+
+		if (result?._id) {
 			return res.json({
 				status: 'success',
 				message: "L'utilisateur à été supprimé, cette action est irréversible",

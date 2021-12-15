@@ -17,16 +17,18 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(bodyParser.json()) // for parsing application/json
 
-// connexion à MongoDB
+//connexion à MongoDB
 mongoose.connect(process.env.DB_URL, {
 	auth: {
 		username: process.env.DB_USER,
 		password: process.env.DB_PASS,
 	},
-	authSource: 'admin',
 	useUnifiedTopology: true,
 	useNewUrlParser: true,
 })
+
+//mongoose.connect(process.env.DB, { useNewUrlParser: true })
+
 // affiche un message si la connexion à MongoDB est active ou un message d'erreur ainsi que la gestion des connexions
 if (process.env.NODE_ENV !== 'production') {
 	const mDbConnect = mongoose.connection
