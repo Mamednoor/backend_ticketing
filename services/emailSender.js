@@ -40,18 +40,22 @@ const mailProcessor = ({
 			mailler = {
 				from: '"MNG Company" <compteservicecda@gmail.com>', // sender address
 				to: email, // list of receivers
-				subject: 'Code de réinitialisation de votre mot de passe', // Subject line
+				subject: '***NO-REPLY*** Réinitialisation du mot de passe', // Subject line
 				text:
 					'Voici votre code de ré-initialisation' +
 					code +
 					' ce code est valable pendant 24H', // plain text body
-				html: `<p>Bonjour,</p>
-					Voici votre code de ré-initialisation 
-					<b>${code}</b>
-					ce code est valable pendant 24H
-					<p>Merci de suivre le lien afin de modifier de votre mot de passe</p>
-					<p>${resetPasswordLink}</p>
+				html: `
+					<p>Bonjour ${firstname} ${lastname},</p>
+
+					<p>Vous avez demandé à réinitialiser votre mot de passe pour votre compte. Utilisez le lien ci-dessous pour le réinitialiser.</p>
+					<p>Merci d'utiliser le code suivant : <b>${code}</b></p>
+					<a href=${resetPasswordLink}>Lien de réinitialisation</a>
+					<p>Le lien ainsi que le code sont valable pour une durée de 24H</p>
+					<p>Si vous n'avez pas demandé de réinitialisation de mot de passe, veuillez ignorer cet e-mail.</p>
+
 					<p>Merci de ne pas répondre à ce mail</p>
+
 					<p>Cordialement.</p>`, // html body
 			}
 			send(mailler)
@@ -60,9 +64,9 @@ const mailProcessor = ({
 			mailler = {
 				from: '"MNG Company" <compteservicecda@gmail.com>', // sender address
 				to: email, // list of receivers
-				subject: 'Réinitialisation du mot de passe effectuée', // Subject line
+				subject: '***NO-REPLY*** Réinitialisation du mot de passe effectuée', // Subject line
 				text: 'Votre mot de passe a été mise à jour', // plain text body
-				html: `<p>Bonjour,</p>
+				html: `<p>Bonjour ${firstname} ${lastname},</p>
 						Votre mot de passe a été mise à jour 
 					<p>Vous pouvez de nouveau vous connecter</p>
 					<p>Cordialement.</p>`, // html body
@@ -73,7 +77,8 @@ const mailProcessor = ({
 			mailler = {
 				from: '"MNG Company" <compteservicecda@gmail.com>', // sender address
 				to: email, // list of receivers
-				subject: 'Validation de la création de votre compte utilisateur', // Subject line
+				subject:
+					'***NO-REPLY*** Validation de la création de votre compte utilisateur', // Subject line
 				text: 'Merci de suivre le lien suivant pour la validation de votre compte ', // plain text body
 				html: `<p>Bonjour,</p>
 							Merci de suivre le lien suivant pour la validation de votre compte 
@@ -86,7 +91,7 @@ const mailProcessor = ({
 			mailler = {
 				from: '"MNG Company" <compteservicecda@gmail.com>', // sender address
 				to: email, // list of receivers
-				subject: 'Nous avons crée votre compte', // Subject line
+				subject: '***NO-REPLY*** Nous avons crée votre compte', // Subject line
 				text: 'Merci de suivre le lien suivant pour la validation de votre compte, Afin de pouvoir vous connecter, merci de réinitialiser votre mot de passe', // plain text body
 				html: `<p>Bonjour ${firstname} ${lastname},</p>
 								Merci de suivre le lien suivant pour la validation de votre compte 

@@ -443,6 +443,8 @@ router.post('/forget-password', resetMailCheck, async (req, res) => {
 		const setCode = await setResetCode(email)
 		await mailProcessor({
 			email,
+			firstname: user?.firstname,
+			lastname: user?.lastname,
 			code: setCode.resetCode,
 			type: 'Reset-Password',
 			resetPasswordLink: URL + 'reset-password/' + user?._id + '/' + email,
@@ -466,6 +468,7 @@ router.patch('/reset-password', updatePwdMailCheck, async (req, res) => {
 	const { email, resetCode, newPassword } = req.body
 
 	const getResetCode = await ResetPwdByMail(email, resetCode)
+	const userNames = await getUserByEmail(email)
 
 	if (getResetCode?._id) {
 		const createdDate = getResetCode?.addedOn
@@ -482,7 +485,12 @@ router.patch('/reset-password', updatePwdMailCheck, async (req, res) => {
 		const user = await updatePassword(email, hashedNewPwd)
 
 		if (user?._id) {
-			await mailProcessor({ email: user?.email, type: 'Password-update' })
+			await mailProcessor({
+				email: user?.email,
+				firstname: userNames?.firstname,
+				lastname: userNames?.lastname,
+				type: 'Password-update',
+			})
 
 			deleteOldCode(email, resetCode)
 
