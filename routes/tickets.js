@@ -26,7 +26,6 @@ router.all('/', (req, res, next) => {
 	next()
 })
 
-// recuperer tout les tickets d'un utilisateur
 router.get('/', checkToken, async (req, res) => {
 	try {
 		const clientId = req.userId
@@ -42,9 +41,6 @@ router.get('/', checkToken, async (req, res) => {
 	}
 })
 
-////////////////// ADMIN //////////////////
-
-// recuperer tout les tickets admin
 router.get('/all', checkToken, async (req, res) => {
 	try {
 		//const clientId = req.userId
@@ -60,7 +56,6 @@ router.get('/all', checkToken, async (req, res) => {
 	}
 })
 
-// recuperer details d'un ticket admin
 router.get('/all/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
@@ -76,7 +71,6 @@ router.get('/all/:_id', checkToken, async (req, res) => {
 	}
 })
 
-// mise à jour du ticket
 router.put('/all/:_id', checkToken, replyTicketCheck, async (req, res) => {
 	try {
 		const { sender, message } = req.body
@@ -105,9 +99,6 @@ router.put('/all/:_id', checkToken, replyTicketCheck, async (req, res) => {
 	}
 })
 
-////////////////// ADMIN //////////////////
-
-// recuperer un ticket en fonction de son id
 router.get('/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
@@ -124,7 +115,6 @@ router.get('/:_id', checkToken, async (req, res) => {
 	}
 })
 
-// création d'un ticket
 router.post('/add-ticket', checkToken, createTicketCheck, async (req, res) => {
 	try {
 		const clientId = req.userId
@@ -162,7 +152,6 @@ router.post('/add-ticket', checkToken, createTicketCheck, async (req, res) => {
 	}
 })
 
-// mise à jour du ticket
 router.put('/:_id', checkToken, replyTicketCheck, async (req, res) => {
 	try {
 		const { sender, message } = req.body
@@ -193,7 +182,6 @@ router.put('/:_id', checkToken, replyTicketCheck, async (req, res) => {
 	}
 })
 
-// fermeture d'un ticket
 router.patch('/close-ticket/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
@@ -218,7 +206,6 @@ router.patch('/close-ticket/:_id', checkToken, async (req, res) => {
 	}
 })
 
-// fermeture d'un ticket
 router.patch('/inprogress-ticket/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket
@@ -242,7 +229,6 @@ router.patch('/inprogress-ticket/:_id', checkToken, async (req, res) => {
 	}
 })
 
-// suppression d'un ticket
 router.delete('/delete/:_id', checkToken, async (req, res) => {
 	try {
 		// query selector de l'id du ticket

@@ -44,7 +44,6 @@ router.all('/', (req, res, next) => {
 	next()
 })
 
-// création d'un utilisateur
 router.post('/', createUserCheck, async (req, res) => {
 	const { firstname, lastname, company, address, phone, email, password } =
 		req.body
@@ -86,8 +85,6 @@ router.post('/', createUserCheck, async (req, res) => {
 		})
 	}
 })
-
-////////////////// ADMIN //////////////////
 
 router.post('/create-user', checkToken, createUserCheck, async (req, res) => {
 	const _id = req.userId
@@ -153,7 +150,6 @@ router.post('/create-user', checkToken, createUserCheck, async (req, res) => {
 	}
 })
 
-// recuperer tout les utilisateurs
 router.get('/user-list', checkToken, async (req, res) => {
 	const _id = req.userId
 	const userRole = await getUserById(_id)
@@ -175,7 +171,6 @@ router.get('/user-list', checkToken, async (req, res) => {
 	}
 })
 
-// recuperer un utilisateur
 router.get('/user-details/:_id', checkToken, async (req, res) => {
 	const Auth = req.userId
 	const userRole = await getUserById(Auth)
@@ -198,7 +193,6 @@ router.get('/user-details/:_id', checkToken, async (req, res) => {
 	}
 })
 
-// suppression d'un utilisateur
 router.delete('/delete-user/:_id', checkToken, async (req, res) => {
 	const Auth = req.userId
 	const userRole = await getUserById(Auth)
@@ -281,9 +275,6 @@ router.patch(
 	},
 )
 
-////////////////// ADMIN //////////////////
-
-// vérification / activation du compte
 router.patch('/validation', async (req, res) => {
 	try {
 		const { _id, email } = req.body
@@ -309,7 +300,6 @@ router.patch('/validation', async (req, res) => {
 	}
 })
 
-// profil utilisateur
 router.get('/profil', checkToken, async (req, res) => {
 	const _id = req.userId
 
@@ -374,7 +364,6 @@ router.patch('/profil/:_id', checkToken, profilCheck, async (req, res) => {
 	}
 })
 
-// connexion d'un utilisateur
 router.post('/login', loginCheck, async (req, res) => {
 	const { email, password } = req.body
 
@@ -421,7 +410,6 @@ router.post('/login', loginCheck, async (req, res) => {
 	})
 })
 
-// déconnexion de l'utilisateur
 router.delete('/logout', checkToken, async (req, res) => {
 	const token = req.headers.authorization
 
@@ -434,7 +422,6 @@ router.delete('/logout', checkToken, async (req, res) => {
 	res.json({ messeage: 'Déconnexion réussie' })
 })
 
-// requête de réinitialisation du mot de passe
 router.post('/forget-password', resetMailCheck, async (req, res) => {
 	const { email } = req.body
 	const user = await getUserByEmail(email)
@@ -463,7 +450,6 @@ router.post('/forget-password', resetMailCheck, async (req, res) => {
 	})
 })
 
-// mise à jour du mot de passe après réinitialisation
 router.patch('/reset-password', updatePwdMailCheck, async (req, res) => {
 	const { email, resetCode, newPassword } = req.body
 
