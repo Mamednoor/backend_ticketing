@@ -44,7 +44,7 @@ router.all('/', (req, res, next) => {
 	next()
 })
 
-router.post('/', createUserCheck, async (req, res) => {
+router.post('/registration', createUserCheck, async (req, res) => {
 	const { firstname, lastname, company, address, phone, email, password } =
 		req.body
 	try {
@@ -87,9 +87,9 @@ router.post('/', createUserCheck, async (req, res) => {
 })
 
 router.post('/create-user', checkToken, createUserCheck, async (req, res) => {
-	const _id = req.userId
-	const userRole = await getUserById(_id)
-	console.log(userRole)
+	const adminId = req.userId
+	const userRole = await getUserById(adminId)
+	console.log(adminId)
 
 	const {
 		firstname,
@@ -116,8 +116,11 @@ router.post('/create-user', checkToken, createUserCheck, async (req, res) => {
 			isAdmin,
 			password: hashedPwd,
 		}
-		const result = await insertUser(newUser)
-		if (_id && userRole?.isAdmin === true) {
+		
+		if (adminId && userRole?.isAdmin === true) {
+
+			const result = await insertUser(newUser)
+
 			await mailProcessor({
 				email,
 				type: 'User-Created',
@@ -127,16 +130,23 @@ router.post('/create-user', checkToken, createUserCheck, async (req, res) => {
 				password,
 			})
 
-			res.json({
+			return res.json({
 				status: 'success',
 				message: 'Un nouvelle utilisateur a été crée',
 				result,
 			})
 		}
-		if (_id && userRole?.isAdmin === false)
+
+		if (userRole?.isAdmin === false) {
 			return res.json({
 				message: 'Autorisation refusée',
 			})
+		}
+
+		res.json({
+			message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
+		})
+
 	} catch (error) {
 		let message =
 			'Une erreur est survenue, nous ne pouvons répondre à votre requête, veuillez réessayer ultérieurement'
@@ -196,10 +206,10 @@ router.get('/user-details/:_id', checkToken, async (req, res) => {
 router.delete('/delete-user/:_id', checkToken, async (req, res) => {
 	const Auth = req.userId
 	const userRole = await getUserById(Auth)
-	console.log(userRole.isAdmin)
+	// console.log(userRole.isAdmin)
 
 	try {
-		// query selector de l'id du ticket
+		// query selector de l'id de l'utilisateur
 		const { _id } = req.params
 		let result = null
 
@@ -209,10 +219,10 @@ router.delete('/delete-user/:_id', checkToken, async (req, res) => {
 
 		if (result?._id == null) {
 			res.json({
-				message: "l'opération a échouée, l'utilisateur n'existe pas",
+				message: "l'utilisateur n'existe pas ou à déjà été supprimé",
 			})
 		}
-
+		
 		if (result?._id) {
 			return res.json({
 				status: 'success',
@@ -220,6 +230,7 @@ router.delete('/delete-user/:_id', checkToken, async (req, res) => {
 				result,
 			})
 		}
+
 	} catch (error) {
 		res.json({ message: " l'opération a échouée : " + error.message })
 	}
@@ -265,7 +276,7 @@ router.patch(
 			if (result?._id) {
 				return res.json({
 					status: 'success',
-					message: 'Votre profil a été mise à jour',
+					message: "le profil de l'utilisateur a été mise à jour",
 					result,
 				})
 			}
